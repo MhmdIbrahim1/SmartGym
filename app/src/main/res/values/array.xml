@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="random_colors">
+<!--        dark colors-->
+        <item>#3b5651</item>
+        <item>#080e30</item>
+        <item>#571711</item>
+        <item>#1d1d1d</item>
+
+    </array>
+</resources>

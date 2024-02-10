@@ -1,0 +1,85 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <!-- Base application theme. Material3 -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimaryVariant">@color/colorPrimaryBanana</item>
+
+        <!--<item name="android:navigationBarColor">@color/darkBackground</item>-->
+        <item name="android:statusBarColor">@color/iconGrayBackground</item>
+
+
+        <!-- Customize your theme here. -->
+        <!--        <item name="textInputStyle">@style/TextInputLayoutTheme</item>-->
+
+        <!--        <item name="bottomNavigationStyle">@style/CustomBottomNavigationViewStyle</item>-->
+        <item name="android:windowIsTranslucent">true</item>
+
+
+        <!-- DEF STYLE -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="textColor">@color/textColor</item>
+        <item name="colorOnPrimary">@color/whiteText</item>
+        <item name="grayTextColor">@color/grayTextColor</item>
+        <item name="primaryGrayBackground">@color/primaryGrayBackground</item>
+        <item name="primaryBlackBackground">@color/primaryBlackBackground</item>
+        <item name="iconGrayBackground">@color/iconGrayBackground</item>
+        <item name="boxItemBackground">@color/boxItemBackground</item>
+        <item name="iconColor">@color/iconColor</item>
+        <item name="white">@color/white</item>
+        <item name="black">@color/black</item>
+        <item name="orange">@color/colorPrimaryOrange</item>
+
+
+
+    </style>
+
+
+    <style name="AppTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/google_sans</item>
+    </style>
+
+    <style name="AppButtonStyle" parent="android:Widget.Holo.Button">
+        <item name="android:fontFamily">@font/google_sans</item>
+    </style>
+
+    <style name="NiceButton">
+        <!--removes shadow-->
+        <item name="android:stateListAnimator">@null</item>
+
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconSize">20dp</item>
+        <item name="cornerRadius">@dimen/rounded_button_radius</item>
+        <item name="android:textSize">15sp</item>
+
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:foreground">@drawable/outline_drawable_less</item>
+        <item name="android:tag">@string/tv_no_focus_tag</item>
+    </style>
+
+    <style name="OrangeButton" parent="NiceButton">
+        <item name="strokeColor">?attr/iconGrayBackground</item>
+        <item name="backgroundTint">?attr/orange</item>
+        <item name="iconTint">?attr/iconGrayBackground</item>
+        <item name="android:textColor">?attr/iconGrayBackground</item>
+        <item name="rippleColor">?attr/primaryBlackBackground</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+
+    <style name="h3">
+        <item name="android:fontFamily">@font/poppins_light</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+
+</resources>

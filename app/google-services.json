@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1057807255220",
+    "project_id": "smart-gym-system-bfb97",
+    "storage_bucket": "smart-gym-system-bfb97.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057807255220:android:1da20a507633fa2c0ab9e1",
+        "android_client_info": {
+          "package_name": "com.example.smartgymapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw8iB70Cgp63bEQoyKS54UN-Q-bmE6tqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
