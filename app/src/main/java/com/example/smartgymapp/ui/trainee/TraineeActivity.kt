@@ -1,5 +1,6 @@
 package com.example.smartgymapp.ui.trainee
 
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,8 +14,10 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityTraineeBinding
+import com.example.smartgymapp.util.CommonActivity.getResourceColor
 import com.example.smartgymapp.util.CommonActivity.isLtr
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,9 +32,23 @@ class TraineeActivity : AppCompatActivity() {
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.trainee_fragment_container_view) as NavHostFragment
-         navController = navHostFragment.navController
+        navController = navHostFragment.navController
         binding.navView.setOnItemSelectedListener { item ->
             onNavDestinationSelected(item, navController)
+        }
+
+        val rippleColor = ColorStateList.valueOf(getResourceColor(R.attr.orange, 0.1f))
+
+        binding.navView.apply {
+            itemRippleColor = rippleColor
+            itemActiveIndicatorColor = rippleColor
+            setupWithNavController(navController)
+            setOnItemSelectedListener { item ->
+                onNavDestinationSelected(
+                    item,
+                    navController
+                )
+            }
         }
     }
 
@@ -99,10 +116,4 @@ class TraineeActivity : AppCompatActivity() {
             layoutParams = params
         }
     }
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        super.onBackPressed()
-        binding.navView.selectedItemId = navController.currentDestination?.id ?: 0
-    }
-
 }

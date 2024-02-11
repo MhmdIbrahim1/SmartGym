@@ -1,7 +1,9 @@
 package com.example.smartgymapp.util
 
 import android.app.Activity
+import android.content.Context
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -12,15 +14,22 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartgymapp.R
 import com.example.smartgymapp.mvvm.logError
 import com.example.smartgymapp.util.UiHelper.toPx
+import kotlin.math.roundToInt
 
 object UiHelper{
     val Int.toPx: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
@@ -109,6 +118,20 @@ object CommonActivity {
         }
     }
     fun View.isLtr() = this.layoutDirection == View.LAYOUT_DIRECTION_LTR
+
+    @ColorInt
+    fun Context.getResourceColor(@AttrRes resource: Int, alphaFactor: Float = 1f): Int {
+        val typedArray = obtainStyledAttributes(intArrayOf(resource))
+        val color = typedArray.getColor(0, 0)
+        typedArray.recycle()
+
+        if (alphaFactor < 1f) {
+            val alpha = (color.alpha * alphaFactor).roundToInt()
+            return Color.argb(alpha, color.red, color.green, color.blue)
+        }
+
+        return color
+    }
 
 }
 

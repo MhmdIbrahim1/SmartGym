@@ -61,6 +61,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.6.0")
     implementation ("androidx.navigation:navigation-ui-ktx:2.6.0")
 
+
+    //Preference
     implementation("androidx.preference:preference-ktx:1.2.1")
 
 
@@ -81,14 +83,17 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
+    // Dagger - Hilt
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
 
+    // Lotte Animation
     implementation ("com.airbnb.android:lottie:6.1.0")
 
     //circular image
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
+    //Dots Indicator
     implementation("com.tbuonomo:dotsindicator:5.0")
 
 }
