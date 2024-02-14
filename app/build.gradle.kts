@@ -96,6 +96,15 @@ dependencies {
     //Dots Indicator
     implementation("com.tbuonomo:dotsindicator:5.0")
 
+    //coil
+    implementation("io.coil-kt:coil:0.13.0")
+
+    // FirebaseUI for Cloud Firestore
+    implementation ("com.firebaseui:firebase-ui-firestore:8.0.2")
+
+    // FirebaseUI for Firebase Auth
+    implementation ("com.firebaseui:firebase-ui-auth:8.0.2")
+
 }
 // Allow references to generated code
 kapt {

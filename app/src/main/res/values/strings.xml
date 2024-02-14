@@ -21,5 +21,7 @@
     <string name="program">Program\n</string>
     <string name="diet">diet</string>
     <string name="calender">Calender</string>
+    <string name="trainers">Trainers</string>
+    <string name="main">Main</string>
 
 </resources>

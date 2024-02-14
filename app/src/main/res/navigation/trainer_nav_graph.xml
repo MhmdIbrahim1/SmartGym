@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trainer_graph"
+    app:startDestination="@id/trainerMainFragment">
+
+    <fragment
+        android:id="@+id/trainerChatFragment"
+        android:name="com.example.smartgymapp.ui.trainer.TrainerChatFragment"
+        android:label="fragment_trainer_chat"
+        tools:layout="@layout/fragment_trainer_chat" />
+    <fragment
+        android:id="@+id/trainerMainFragment"
+        android:name="com.example.smartgymapp.ui.trainer.TrainerMainFragment"
+        android:label="fragment_trainer_main"
+        tools:layout="@layout/fragment_trainer_main" />
+    <fragment
+        android:id="@+id/trainerProfileFragment"
+        android:name="com.example.smartgymapp.ui.trainer.TrainerProfileFragment"
+        android:label="fragment_trainer_profile"
+        tools:layout="@layout/fragment_trainer_profile" />
+</navigation>

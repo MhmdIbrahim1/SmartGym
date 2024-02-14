@@ -7,12 +7,9 @@
 
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.example.smartgymapp.ui.trainee.ChatFragment"
+        android:name="com.example.smartgymapp.ui.trainee.chat.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" >
-        <action
-            android:id="@+id/action_chatFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -24,8 +21,5 @@
         android:name="com.example.smartgymapp.ui.trainee.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
-        <action
-            android:id="@+id/action_mainFragment_to_chatFragment"
-            app:destination="@id/chatFragment" />
     </fragment>
 </navigation>

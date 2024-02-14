@@ -2,6 +2,7 @@ package com.example.smartgymapp.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Rect
@@ -28,6 +29,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartgymapp.R
 import com.example.smartgymapp.mvvm.logError
+import com.example.smartgymapp.ui.trainee.chat.UserModel
 import com.example.smartgymapp.util.UiHelper.toPx
 import kotlin.math.roundToInt
 
@@ -131,6 +133,28 @@ object CommonActivity {
         }
 
         return color
+    }
+
+    fun passUserModelAsIntent(intent: Intent,userModel: UserModel ) {
+        intent.apply {
+            putExtra("email", userModel.email)
+            putExtra("firstName", userModel.firstName)
+            putExtra("lastName", userModel.lastName)
+            putExtra("userId", userModel.userId)
+            putExtra("userType", userModel.userType)
+            putExtra("profile_picture", userModel.profile_picture)
+        }
+    }
+
+    fun getUserModelFromIntent(intent: Intent): UserModel {
+        return UserModel(
+            intent.getStringExtra("email") ?: "",
+            intent.getStringExtra("firstName") ?: "",
+            intent.getStringExtra("lastName") ?: "",
+            intent.getStringExtra("userId") ?: "",
+            intent.getStringExtra("userType") ?: "",
+            intent.getStringExtra("profile_picture") ?: ""
+        )
     }
 
 }

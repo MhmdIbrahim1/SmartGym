@@ -107,7 +107,11 @@ class LoginFragment : Fragment() {
             }
         }
     }
-
+    companion object{
+        const val TRAINING = "Trainee"
+        const val TRAINER = "Trainer"
+        const val DOCTOR = "Doctor"
+    }
     private fun showProgressBar() {
         binding.progressBar.visibility = View.VISIBLE
     }
@@ -116,9 +120,5 @@ class LoginFragment : Fragment() {
         binding.progressBar.visibility = View.GONE
     }
 
-    companion object{
-        const val TRAINING = "Trainee"
-        const val TRAINER = "Trainer"
-        const val DOCTOR = "Doctor"
-    }
+
 }
