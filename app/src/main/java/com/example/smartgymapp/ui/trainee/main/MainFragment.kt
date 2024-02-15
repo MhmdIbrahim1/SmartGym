@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.MarginPageTransformer
 import com.example.smartgymapp.R
@@ -17,6 +18,7 @@ import com.example.smartgymapp.databinding.FragmentMainBinding
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.util.CommonActivity
 import com.example.smartgymapp.util.CommonActivity.NetworkResult
+import com.example.smartgymapp.util.UiHelper.navigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -42,9 +44,14 @@ class MainFragment : Fragment() {
 
         setupViewPager()
         observeViewModel()
-
-
         setupExercisesRv()
+
+        binding.searchIv.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
+        }
+        binding.searchTv.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
+        }
     }
 
     private fun setupExercisesRv() {

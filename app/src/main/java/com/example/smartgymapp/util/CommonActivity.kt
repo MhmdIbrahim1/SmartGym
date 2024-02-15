@@ -28,8 +28,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartgymapp.R
+import com.example.smartgymapp.model.BookingStatus
 import com.example.smartgymapp.mvvm.logError
-import com.example.smartgymapp.ui.trainee.chat.UserModel
+import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.UiHelper.toPx
 import kotlin.math.roundToInt
 
@@ -135,7 +136,7 @@ object CommonActivity {
         return color
     }
 
-    fun passUserModelAsIntent(intent: Intent,userModel: UserModel ) {
+    fun passUserModelAsIntent(intent: Intent,userModel: UserModel) {
         intent.apply {
             putExtra("email", userModel.email)
             putExtra("firstName", userModel.firstName)
@@ -143,6 +144,10 @@ object CommonActivity {
             putExtra("userId", userModel.userId)
             putExtra("userType", userModel.userType)
             putExtra("profile_picture", userModel.profile_picture)
+            putExtra("bookingStatus", userModel.bookingStatus)
+            putExtra("bookingStatusText", userModel.bookingStatusText)
+            putExtra("traineeRequestsCount", userModel.traineeRequestsCount)
+            putExtra("fcmToken", userModel.fcmToken)
         }
     }
 
@@ -153,7 +158,10 @@ object CommonActivity {
             intent.getStringExtra("lastName") ?: "",
             intent.getStringExtra("userId") ?: "",
             intent.getStringExtra("userType") ?: "",
-            intent.getStringExtra("profile_picture") ?: ""
+            intent.getStringExtra("profile_picture") ?: "",
+            intent.getSerializableExtra("bookingStatus") as BookingStatus,
+            intent.getStringExtra("fcmToken") ?: "",
+            intent.getIntExtra("traineeRequestsCount", 0)
         )
     }
 

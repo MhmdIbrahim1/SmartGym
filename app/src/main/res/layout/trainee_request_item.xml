@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="5dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/user_iv"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/man_user"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/user_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="@font/poppins_thin"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/user_iv"
+            app:layout_constraintStart_toEndOf="@id/user_iv"
+            app:layout_constraintTop_toTopOf="@+id/user_iv"
+            tools:text="name" />
+
+        <LinearLayout
+            android:id="@+id/chat_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+
+            android:orientation="vertical"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/accept_iv"
+                android:layout_width="35dp"
+                android:layout_height="0dp"
+                android:layout_gravity="top"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="1"
+                android:src="@drawable/accept_icon" />
+
+            <ImageView
+                android:id="@+id/reject_iv"
+                android:layout_width="35dp"
+                android:layout_height="0dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:src="@drawable/reject_icon" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

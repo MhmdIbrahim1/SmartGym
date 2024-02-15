@@ -22,13 +22,13 @@ import com.example.smartgymapp.util.Coroutines.ioSafe
 import com.example.smartgymapp.util.Coroutines.main
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val loginViewModel by viewModels<LoginViewModel>()
+
     private var selectedUserType: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

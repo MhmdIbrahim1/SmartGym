@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.IdRes
@@ -19,6 +20,7 @@ import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityTrainerBinding
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
 import com.example.smartgymapp.util.CommonActivity.isLtr
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,7 +31,7 @@ class TrainerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTrainerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        getNFCToken()
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.trainer_nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
@@ -50,6 +52,20 @@ class TrainerActivity : AppCompatActivity() {
                 )
             }
         }
+//        val userId = intent.extras?.getString("userId")
+//        FirebaseFirestore.getInstance().collection(LoginViewModel.USER_COLLECTION).document(userId!!).get()
+//            .addOnCompleteListener {task ->
+//                if (task.isSuccessful){
+//                    val model = task.result.toObject(UserModel::class.java)
+//                    if (model != null){
+//                        val intent = Intent(this, DoChatActivity::class.java)
+//                        CommonActivity.passUserModelAsIntent(intent, model)
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                        startActivity(intent)
+//                    }
+//                }
+//
+//            }
     }
 
     private fun NavDestination.matchDestination(@IdRes destId: Int): Boolean =
@@ -113,6 +129,15 @@ class TrainerActivity : AppCompatActivity() {
                 )
             }
             layoutParams = params
+        }
+    }
+
+    private fun getNFCToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if(it.isSuccessful){
+                val token = it.result
+                Log.d("FCM", "Token: $token")
+            }
         }
     }
 }

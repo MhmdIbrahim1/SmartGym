@@ -25,7 +25,6 @@ class ChatFragment : Fragment() {
     private val chatViewModel by activityViewModels<ChatViewModel>()
     private lateinit var traineeChatAdapter: TraineeChatAdapter
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

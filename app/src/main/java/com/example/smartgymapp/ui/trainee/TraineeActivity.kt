@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.annotation.IdRes
@@ -19,6 +20,9 @@ import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityTraineeBinding
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
 import com.example.smartgymapp.util.CommonActivity.isLtr
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,8 +31,10 @@ class TraineeActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityTraineeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        getNFCToken()
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.trainee_fragment_container_view) as NavHostFragment
@@ -50,6 +56,22 @@ class TraineeActivity : AppCompatActivity() {
                 )
             }
         }
+
+//        val userId = intent.extras?.getString("userId")
+//        FirebaseFirestore.getInstance().collection(USER_COLLECTION).document(userId!!).get()
+//            .addOnCompleteListener {task ->
+//                if (task.isSuccessful){
+//                    val model = task.result.toObject(UserModel::class.java)
+//                    if (model != null){
+//                        val intent = Intent(this, DoChatActivity::class.java)
+//                        CommonActivity.passUserModelAsIntent(intent, model)
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                        startActivity(intent)
+//                    }
+//                }
+//
+//            }
+
     }
 
 
@@ -92,6 +114,7 @@ class TraineeActivity : AppCompatActivity() {
             R.id.mainFragment,
             R.id.chatFragment,
             R.id.profileFragment,
+            R.id.searchFragment
         ).contains(destination.id)
 
         binding.traineeFragmentContainerView.apply {
@@ -114,6 +137,22 @@ class TraineeActivity : AppCompatActivity() {
                 )
             }
             layoutParams = params
+        }
+    }
+
+    private fun getNFCToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if(it.isSuccessful){
+                val token = it.result
+                FirebaseFirestore.getInstance().collection("users")
+                    .document(FirebaseAuth.getInstance().currentUser!!.uid)
+                    .update("fcmToken", token)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful){
+                            Log.d("FCM", "Token: $token")
+                        }
+                    }
+            }
         }
     }
 }

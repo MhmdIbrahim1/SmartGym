@@ -23,5 +23,9 @@
     <string name="calender">Calender</string>
     <string name="trainers">Trainers</string>
     <string name="main">Main</string>
+    <string name="search">Search</string>
+    <string name="doctor_trainer_image">doctor_trainer_image</string>
+    <string name="book_now">Book Now</string>
+    <string name="trainee_bookings">Trainee Bookings</string>
 
 </resources>

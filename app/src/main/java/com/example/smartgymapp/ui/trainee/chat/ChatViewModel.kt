@@ -2,6 +2,7 @@ package com.example.smartgymapp.ui.trainee.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.CommonActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

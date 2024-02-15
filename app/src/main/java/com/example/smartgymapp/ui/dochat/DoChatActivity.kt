@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityDoChatBinding
+import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.mvvm.launchSafe
-import com.example.smartgymapp.ui.trainee.chat.UserModel
 import com.example.smartgymapp.util.CommonActivity
 import com.example.smartgymapp.util.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -53,6 +53,7 @@ class DoChatActivity : AppCompatActivity() {
                 return@setOnClickListener
             }else{
                 sendMessageToUser(message);
+                //sendNotificationToUser(message)
             }
         }
 
@@ -80,6 +81,48 @@ class DoChatActivity : AppCompatActivity() {
         getOrCreateChatroomModel()
         setupChatRecyclerView()
     }
+
+//    private fun sendNotificationToUser(message: String) {
+//        FirebaseFirestore.getInstance().collection("users")
+//            .document(FirebaseAuth.getInstance().currentUser!!.uid)
+//            .get().addOnCompleteListener {
+//                if (it.isSuccessful){
+//                    val userModel = it.result?.toObject(UserModel::class.java)
+//                    try {
+//                        val jsonObject = JSONObject()
+//                        val notificationObject = JSONObject()
+//                        notificationObject.put("title", "${userModel?.firstName} ${userModel?.lastName}")
+//                        notificationObject.put("body", message)
+//
+//                        val dataObject = JSONObject()
+//                        dataObject.put("userId", userModel?.userId)
+//
+//                        jsonObject.put("notification", notificationObject)
+//                        jsonObject.put("data", dataObject)
+//                        jsonObject.put("to", otherUser.fcmToken)
+//
+//                        callApi(jsonObject)
+//
+//                    }catch (e: Exception){
+//                        e.printStackTrace()
+//                    }
+//                }
+//            }
+//    }
+
+//    fun callApi(jsonObject: JSONObject){
+//        val json  = "application/json; charset=utf-8".toMediaType()
+//        val client = okhttp3.OkHttpClient()
+//        val url = "https://fcm.googleapis.com/fcm/send"
+//        val body = RequestBody.create(json, jsonObject.toString())
+//        val request = okhttp3.Request.Builder()
+//            .url(url)
+//            .post(body)
+//            .header("Authorization", "Bearer AAAA9ko5xrQ:APA91bGj2TeIUwq4v9jloJ2sOxwBBfIdI-WWduF7lWBxnYvrf7dsuZXcDBdXt1nGHwGeIBq9yGDk4hnIHZEa0q78KGGnxi6qQv7IpwovRR6PyUDSAcMYFdxrF1S-uqwqUiDfapHZQzj7")
+//            .build()
+//        client.newCall(request).execute()
+//
+//    }
 
 
     private fun sendMessageToUser(message: String) {
