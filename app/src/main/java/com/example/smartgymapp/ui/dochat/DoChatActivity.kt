@@ -1,6 +1,7 @@
 package com.example.smartgymapp.ui.dochat
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -192,6 +193,9 @@ class DoChatActivity : AppCompatActivity() {
                 )
                 chatRoomRef.set(chatroomModel)
             }
+            Log.d("ChatroomModel",
+                Arrays.asList(FirebaseAuth.getInstance().currentUser!!.uid, otherUser.userId).toString()
+            )
         }
     }
 

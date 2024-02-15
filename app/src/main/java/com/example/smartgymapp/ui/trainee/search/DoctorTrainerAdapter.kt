@@ -12,9 +12,11 @@ import com.example.smartgymapp.databinding.DoctorItemBinding
 import com.example.smartgymapp.model.BookingStatus
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-class DoctorTrainerAdapter: RecyclerView.Adapter<DoctorTrainerAdapter.DoctorTrainerViewHolder>() {
-    inner class DoctorTrainerViewHolder(val binding: DoctorItemBinding):
+class DoctorTrainerAdapter : RecyclerView.Adapter<DoctorTrainerAdapter.DoctorTrainerViewHolder>() {
+    inner class DoctorTrainerViewHolder(val binding: DoctorItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(userModel: UserModel) {
             binding.apply {
@@ -32,7 +34,7 @@ class DoctorTrainerAdapter: RecyclerView.Adapter<DoctorTrainerAdapter.DoctorTrai
                 }
             }
         }
-   }
+    }
 
     private val diffUtil = object : DiffUtil.ItemCallback<UserModel>() {
         override fun areItemsTheSame(oldItem: UserModel, newItem: UserModel): Boolean {
@@ -54,51 +56,33 @@ class DoctorTrainerAdapter: RecyclerView.Adapter<DoctorTrainerAdapter.DoctorTrai
         return differ.currentList.size
     }
 
-    // Inside onBindViewHolder method of adapter
-// Inside onBindViewHolder method of adapter
+
     override fun onBindViewHolder(holder: DoctorTrainerViewHolder, position: Int) {
         val userModel = differ.currentList[position]
         holder.bind(userModel)
 
-        // Set the click listener for the book now button
         holder.binding.bookNowBtn.apply {
-
-            //update the booking status based on the user's booking status
-            when (userModel.bookingStatus) {
-                BookingStatus.NOT_BOOKED -> {
+            val userId = FirebaseAuth.getInstance().currentUser!!.uid
+            when {
+                userModel.userBookedIdsPending.contains(userId) -> {
+                    text = "Pending"
+                    isEnabled = false
+                }
+                userModel.userBookedIdsAccepted.contains(userId) -> {
+                    text = "Booked"
+                    isEnabled = false
+                    setBackgroundColor(context.getResourceColor(R.attr.colorPrimary))
+                }
+                else -> {
                     text = "Book Now"
+                    isEnabled = true
                     setOnClickListener {
                         onBookClickListener?.invoke(userModel)
                     }
                 }
-                BookingStatus.BOOKED -> {
-                    text = "Booked"
-                    isEnabled = false
-                }
-                BookingStatus.ACCEPTED -> {
-                    text = "Booked"
-                    // change button color to green
-                    setBackgroundColor(context.getResourceColor(R.attr.colorPrimary))
-                    isEnabled = false
-                }
-                BookingStatus.REJECTED -> {
-                    text = "Rejected"
-                    isEnabled = false
-                }
-                BookingStatus.REQUESTED -> {
-                    text = "Requested"
-                    isEnabled = false
-                }
-            }
-
-            setOnClickListener {
-                onBookClickListener?.invoke(userModel)
             }
         }
-
     }
-
-
 
     var onBookClickListener: ((UserModel) -> Unit)? = null
 }

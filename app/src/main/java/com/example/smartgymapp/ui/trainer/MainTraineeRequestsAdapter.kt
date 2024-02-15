@@ -70,6 +70,6 @@ class MainTraineeRequestsAdapter: RecyclerView.Adapter<MainTraineeRequestsAdapte
 
     }
 
-    val onAcceptClick: ((UserModel) -> Unit)? = null
-    val onRejectClick: ((UserModel) -> Unit)? = null
+    var onAcceptClick: ((UserModel) -> Unit)? = null
+    var onRejectClick: ((UserModel) -> Unit)? = null
 }

@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 class DoctorsFragment : Fragment() {
     private lateinit var binding: FragmentDoctorsBinding
     private val doctorsViewModel  by viewModels<DoctorsViewModel>()
-    private val doctorsAdapter by lazy { DoctorTrainerAdapter() }
+    private val doctorsAdapter = DoctorTrainerAdapter()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

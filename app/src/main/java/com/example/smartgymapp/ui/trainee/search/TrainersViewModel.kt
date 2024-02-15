@@ -9,6 +9,7 @@ import com.example.smartgymapp.model.BookingStatus
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.CommonActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ class TrainersViewModel @Inject constructor(
         getAllTrainers()
     }
 
-    private fun getAllTrainers() {
+    fun getAllTrainers() {
         _getAllTrainers.value = CommonActivity.NetworkResult.Loading()
         firestore.collection("users")
             .whereEqualTo("userType", "Trainer")
@@ -72,27 +73,23 @@ class TrainersViewModel @Inject constructor(
                 val batch = firestore.batch()
 
                 trainee?.let { traineeModel ->
-                    traineeModel.bookingStatus = BookingStatus.REQUESTED
 
                     // Set trainee request in the trainer's sub-collection
                     val traineeRequestDoc = trainerRequestsRef.document(traineeModel.userId)
                     batch.set(traineeRequestDoc, traineeModel)
 
-                    // Update the trainer's document to reflect the booking status change
                     val trainerDocumentRef = firestore.collection("users").document(trainerUserId)
-                    batch.update(trainerDocumentRef, "bookingStatus", BookingStatus.REQUESTED)
-                    batch.update(trainerDocumentRef, "traineeRequestsCount", 1)
 
-                    // Commit the batched write operation
+                    // Update userBookedIdsPending directly in the batch
+                    batch.update(trainerDocumentRef, "userBookedIdsPending", FieldValue.arrayUnion(traineeUserId))
+
+                    // Commit in real-time
                     batch.commit()
                         .addOnSuccessListener {
-                            // Update the LiveData with the modified UserModel
                             _sendTraineeToTrainerRequests.postValue(CommonActivity.NetworkResult.Success(traineeModel))
-                            Log.d("TrainersViewModel", "Request sent successfully")
                         }
                         .addOnFailureListener { exception ->
                             _sendTraineeToTrainerRequests.postValue(CommonActivity.NetworkResult.Error(exception.message))
-                            Log.d("TrainersViewModel", "Error sending request", exception)
                         }
 
                     // Listen for changes in the trainer's document
@@ -116,6 +113,7 @@ class TrainersViewModel @Inject constructor(
                 _sendTraineeToTrainerRequests.postValue(CommonActivity.NetworkResult.Error(exception.message))
             }
     }
+
 
 
 }

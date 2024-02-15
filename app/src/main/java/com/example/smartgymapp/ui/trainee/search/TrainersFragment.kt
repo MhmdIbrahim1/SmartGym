@@ -1,7 +1,6 @@
 package com.example.smartgymapp.ui.trainee.search
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -19,6 +18,7 @@ import com.example.smartgymapp.model.BookingStatus
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.CommonActivity.showToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,10 +28,8 @@ import kotlin.math.log
 @AndroidEntryPoint
 class TrainersFragment : Fragment() {
     private lateinit var binding: FragmentTrainersBinding
-    private val trainersAdapter by lazy { DoctorTrainerAdapter() }
+    private lateinit var trainersAdapter: DoctorTrainerAdapter
     private val trainersViewModel by viewModels<TrainersViewModel>()
-
-    private lateinit var sharedPreferences: SharedPreferences
 
 
     override fun onCreateView(
@@ -49,25 +47,31 @@ class TrainersFragment : Fragment() {
         observeTrainers()
         observeBookingStatus()
 
-        trainersAdapter.onBookClickListener = { trainee ->
-            val selectedTrainerId = trainee.userId
+        trainersAdapter.onBookClickListener = { trainer ->
+            val selectedTrainerId = trainer.userId
             // Call the function to send the booking request
             trainersViewModel.sendTraineeToTrainerRequests(
                 selectedTrainerId,
                 FirebaseAuth.getInstance().currentUser!!.uid
             )
+            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+                kotlinx.coroutines.delay(1000)
+                trainersViewModel.getAllTrainers()
+            }
+
+
             Log.d("TrainersViewModel", "onViewCreated:$selectedTrainerId")
             Log.d(
                 "TrainersViewModel",
                 "onViewCreated:${FirebaseAuth.getInstance().currentUser!!.uid}"
             )
-
         }
 
 
     }
 
     private fun setUpRecyclerView() {
+        trainersAdapter = DoctorTrainerAdapter()
         binding.trainersRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             adapter = trainersAdapter

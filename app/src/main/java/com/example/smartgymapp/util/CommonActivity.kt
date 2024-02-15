@@ -138,30 +138,31 @@ object CommonActivity {
 
     fun passUserModelAsIntent(intent: Intent,userModel: UserModel) {
         intent.apply {
-            putExtra("email", userModel.email)
+            putExtra("userId", userModel.userId)
             putExtra("firstName", userModel.firstName)
             putExtra("lastName", userModel.lastName)
-            putExtra("userId", userModel.userId)
+            putExtra("email", userModel.email)
             putExtra("userType", userModel.userType)
             putExtra("profile_picture", userModel.profile_picture)
-            putExtra("bookingStatus", userModel.bookingStatus)
-            putExtra("bookingStatusText", userModel.bookingStatusText)
-            putExtra("traineeRequestsCount", userModel.traineeRequestsCount)
+            putExtra("userBookedIdsAccepted", userModel.userBookedIdsAccepted.toTypedArray())
+            putExtra("userBookedIdsPending", userModel.userBookedIdsPending.toTypedArray())
+            putExtra("userBookedIdsRejected", userModel.userBookedIdsRejected.toTypedArray())
             putExtra("fcmToken", userModel.fcmToken)
         }
     }
 
     fun getUserModelFromIntent(intent: Intent): UserModel {
         return UserModel(
-            intent.getStringExtra("email") ?: "",
+            intent.getStringExtra("userId") ?: "",
             intent.getStringExtra("firstName") ?: "",
             intent.getStringExtra("lastName") ?: "",
-            intent.getStringExtra("userId") ?: "",
+            intent.getStringExtra("email") ?: "",
             intent.getStringExtra("userType") ?: "",
             intent.getStringExtra("profile_picture") ?: "",
-            intent.getSerializableExtra("bookingStatus") as BookingStatus,
-            intent.getStringExtra("fcmToken") ?: "",
-            intent.getIntExtra("traineeRequestsCount", 0)
+            intent.getStringArrayExtra("userBookedIdsAccepted")?.toList() ?: emptyList(),
+            intent.getStringArrayExtra("userBookedIdsPending")?.toList() ?: emptyList(),
+            intent.getStringArrayExtra("userBookedIdsRejected")?.toList() ?: emptyList(),
+            intent.getStringExtra("fcmToken") ?: ""
         )
     }
 

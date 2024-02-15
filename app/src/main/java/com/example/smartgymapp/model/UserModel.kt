@@ -1,7 +1,6 @@
 package com.example.smartgymapp.model
 
 import android.os.Parcelable
-import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -11,23 +10,22 @@ data class UserModel(
     val lastName: String,
     val email: String,
     val userType: String,
-    val profile_picture: String,
-    var bookingStatus: BookingStatus,
-    val bookingStatusText: String,
-    val traineeRequestsCount: Int,
+    val profile_picture: String ="",
+    var userBookedIdsAccepted: List<String> = emptyList(),
+    var userBookedIdsPending: List<String> = emptyList(),
+    var userBookedIdsRejected: List<String> = emptyList(),
 
     val fcmToken: String = ""
 
     ): Parcelable{
-    constructor() : this("", "", "", "", "", "", BookingStatus.NOT_BOOKED, "",0)
+    constructor() : this("", "", "", "", "", "")
 }
 
 enum class BookingStatus {
     NOT_BOOKED,
     BOOKED,
     ACCEPTED,
-    REJECTED,
-    REQUESTED
+    REQUESTED,
 }
 
 

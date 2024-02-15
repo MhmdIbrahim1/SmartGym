@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -47,10 +48,14 @@ class MainFragment : Fragment() {
         setupExercisesRv()
 
         binding.searchIv.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
+            if (Navigation.findNavController(binding.root).currentDestination?.id == R.id.mainFragment) {
+                findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
+            }
         }
         binding.searchTv.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
+            if (Navigation.findNavController(binding.root).currentDestination?.id == R.id.mainFragment) {
+                findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
+            }
         }
     }
 
