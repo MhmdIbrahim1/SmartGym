@@ -86,12 +86,12 @@ class MainTrainerViewModel @Inject constructor(
                                     firestore.runBatch { batch ->
                                         // Add Accepted trainee into user Trainees Sub-collection
                                         val trainerTraineesRef = firestore.collection("users").document(trainerUserId)
-                                            .collection("Trainees")
+                                            .collection("BookedChat")
                                         batch.set(trainerTraineesRef.document(traineeUserId), trainee)
 
                                         // Add Current Trainer into user's Trainers Sub-collection
                                         val traineeTrainersRef = firestore.collection("users").document(traineeUserId)
-                                            .collection("Trainers")
+                                            .collection("BookedChat")
                                         batch.set(traineeTrainersRef.document(trainerUserId), trainer)
 
                                         // Add the traineeUserId to the userBookedIdsAccepted list in the trainer's document
@@ -100,6 +100,14 @@ class MainTrainerViewModel @Inject constructor(
                                         val userBookedIdsAccepted = trainer.userBookedIdsAccepted.toMutableList()
                                         userBookedIdsAccepted.add(traineeUserId)
                                         batch.update(trainerDocumentRef, "userBookedIdsAccepted", userBookedIdsAccepted)
+
+
+                                        // add the trainerUserId to the userBookedIdsAccepted list in the trainee's document
+                                        val traineeDocumentRef = firestore.collection("users").document(traineeUserId)
+                                        //fetching the userTrainerIdsAccepted list
+                                        val userTrainerIdsAccepted = trainee.userBookedIdsAccepted.toMutableList()
+                                        userTrainerIdsAccepted.add(trainerUserId)
+                                        batch.update(traineeDocumentRef, "userBookedIdsAccepted", userTrainerIdsAccepted)
 
                                         // delete the specific userTraineeId from userBookedIdsPending
                                         val userBookedIdsPending = trainer.userBookedIdsPending.toMutableList()
