@@ -54,10 +54,10 @@ class TrainersFragment : Fragment() {
                 selectedTrainerId,
                 FirebaseAuth.getInstance().currentUser!!.uid
             )
-            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-                kotlinx.coroutines.delay(1000)
-                trainersViewModel.getAllTrainers()
-            }
+//            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+//                kotlinx.coroutines.delay(1000)
+//                trainersViewModel.getAllTrainers()
+//            }
 
 
             Log.d("TrainersViewModel", "onViewCreated:$selectedTrainerId")

@@ -30,4 +30,14 @@
         android:name="com.example.smartgymapp.ui.trainee.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/doctorsFragment"
+        android:name="com.example.smartgymapp.ui.trainee.search.DoctorsFragment"
+        android:label="fragment_doctors"
+        tools:layout="@layout/fragment_doctors" />
+    <fragment
+        android:id="@+id/trainersFragment"
+        android:name="com.example.smartgymapp.ui.trainee.search.TrainersFragment"
+        android:label="fragment_trainers"
+        tools:layout="@layout/fragment_trainers" />
 </navigation>

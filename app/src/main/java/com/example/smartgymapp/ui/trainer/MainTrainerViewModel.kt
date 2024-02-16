@@ -65,117 +65,111 @@ class MainTrainerViewModel @Inject constructor(
             }
     }
 
-    fun acceptAndSendTrainees(traineeUserId: String, trainerUserId: String) {
-        viewModelScope.launchSafe { acceptedTraineeRequest.postValue(CommonActivity.NetworkResult.Loading()) }
+        fun acceptAndSendTrainees(traineeUserId: String, trainerUserId: String) {
+            viewModelScope.launchSafe { acceptedTraineeRequest.postValue(CommonActivity.NetworkResult.Loading()) }
 
-        val trainerDocRef = firestore.collection("users").document(trainerUserId)
-        val traineeRequestDocRef = trainerDocRef.collection("traineeRequests").document(traineeUserId)
+            val trainerDocRef = firestore.collection("users").document(trainerUserId)
+            val traineeRequestDocRef = trainerDocRef.collection("traineeRequests").document(traineeUserId)
 
-        Log.d("TrainersViewModel", "Checking if trainee request document exists...")
-        traineeRequestDocRef.get().addOnSuccessListener { traineeRequestSnapshot ->
-            if (traineeRequestSnapshot.exists()) {
-                Log.d("TrainersViewModel", "Trainee request document exists. Proceeding with batch operation...")
+            Log.d("TrainersViewModel", "Checking if trainee request document exists...")
+            traineeRequestDocRef.get().addOnSuccessListener { traineeRequestSnapshot ->
+                if (traineeRequestSnapshot.exists()) {
+                    Log.d("TrainersViewModel", "Trainee request document exists. Proceeding with batch operation...")
 
-                // Fetch trainee and trainer objects from Firestore
-                firestore.collection("users").document(traineeUserId).get().addOnSuccessListener { traineeSnapshot ->
-                    val trainee = traineeSnapshot.toObject(UserModel::class.java)
-                    if (trainee != null) {
-                        firestore.collection("users").document(trainerUserId).get().addOnSuccessListener { trainerSnapshot ->
-                            val trainer = trainerSnapshot.toObject(UserModel::class.java)
-                            if (trainer != null) {
-                                firestore.runBatch { batch ->
-                                    // Add Accepted trainee into user Trainees Sub-collection
-                                    val trainerTraineesRef = firestore.collection("users").document(trainerUserId)
-                                        .collection("Trainees")
-                                    batch.set(trainerTraineesRef.document(traineeUserId), trainee)
+                    // Fetch trainee and trainer objects from Firestore
+                    firestore.collection("users").document(traineeUserId).get().addOnSuccessListener { traineeSnapshot ->
+                        val trainee = traineeSnapshot.toObject(UserModel::class.java)
+                        if (trainee != null) {
+                            firestore.collection("users").document(trainerUserId).get().addOnSuccessListener { trainerSnapshot ->
+                                val trainer = trainerSnapshot.toObject(UserModel::class.java)
+                                if (trainer != null) {
+                                    firestore.runBatch { batch ->
+                                        // Add Accepted trainee into user Trainees Sub-collection
+                                        val trainerTraineesRef = firestore.collection("users").document(trainerUserId)
+                                            .collection("Trainees")
+                                        batch.set(trainerTraineesRef.document(traineeUserId), trainee)
 
-                                    // Add Current Trainer into user's Trainers Sub-collection
-                                    val traineeTrainersRef = firestore.collection("users").document(traineeUserId)
-                                        .collection("Trainers")
-                                    batch.set(traineeTrainersRef.document(trainerUserId), trainer)
+                                        // Add Current Trainer into user's Trainers Sub-collection
+                                        val traineeTrainersRef = firestore.collection("users").document(traineeUserId)
+                                            .collection("Trainers")
+                                        batch.set(traineeTrainersRef.document(trainerUserId), trainer)
 
-                                    // Change the status of the field bookingStatus to ACCEPTED
-                                    batch.update(traineeRequestDocRef, "bookingStatus", BookingStatus.ACCEPTED.name)
+                                        // Add the traineeUserId to the userBookedIdsAccepted list in the trainer's document
+                                        val trainerDocumentRef = firestore.collection("users").document(trainerUserId)
+                                        //fetching the userBookedIdsAccepted list
+                                        val userBookedIdsAccepted = trainer.userBookedIdsAccepted.toMutableList()
+                                        userBookedIdsAccepted.add(traineeUserId)
+                                        batch.update(trainerDocumentRef, "userBookedIdsAccepted", userBookedIdsAccepted)
 
-                                    // Update the booking status of the trainer to ACCEPTED
-                                    batch.update(trainerDocRef, "bookingStatus", BookingStatus.ACCEPTED.name)
+                                        // delete the specific userTraineeId from userBookedIdsPending
+                                        val userBookedIdsPending = trainer.userBookedIdsPending.toMutableList()
+                                        userBookedIdsPending.remove(traineeUserId)
+                                        batch.update(trainerDocumentRef, "userBookedIdsPending", userBookedIdsPending)
 
-                                    val trainerDocumentRef = firestore.collection("users").document(trainerUserId)
-                                    val userBookedIdsAccepted = mutableListOf<String>()
-                                    userBookedIdsAccepted.addAll(trainee.userBookedIdsAccepted)
-                                    userBookedIdsAccepted.add(traineeUserId)
-                                    batch.update(trainerDocumentRef, "userBookedIdsAccepted", userBookedIdsAccepted)
-
-                                    // delete from userBookedIdsPending
-                                    val userBookedIdsPending = trainee.userBookedIdsPending.toMutableList()
-                                    userBookedIdsPending.remove(trainerUserId)
-                                    batch.update(trainerDocumentRef, "userBookedIdsPending", userBookedIdsPending)
-
-
-                                    // Delete the trainee from the traineeRequests Sub-collection
-                                    batch.delete(traineeRequestDocRef)
-                                }.addOnSuccessListener {
-                                    Log.d("TrainersViewModel", "Batch operation completed successfully.")
-                                    viewModelScope.launchSafe {
-                                        acceptedTraineeRequest.postValue(
-                                            CommonActivity.NetworkResult.Success(
-                                                UserModel()
+                                        // Delete the trainee from the traineeRequests Sub-collection
+                                        batch.delete(traineeRequestDocRef)
+                                    }.addOnSuccessListener {
+                                        Log.d("TrainersViewModel", "Batch operation completed successfully.")
+                                        viewModelScope.launchSafe {
+                                            acceptedTraineeRequest.postValue(
+                                                CommonActivity.NetworkResult.Success(
+                                                    UserModel()
+                                                )
                                             )
-                                        )
+                                        }
+                                    }.addOnFailureListener { exception ->
+                                        Log.e("TrainersViewModel", "Error executing batch operation: ${exception.message}", exception)
+                                        viewModelScope.launchSafe {
+                                            acceptedTraineeRequest.postValue(
+                                                CommonActivity.NetworkResult.Error(
+                                                    exception.message
+                                                )
+                                            )
+                                        }
                                     }
-                                }.addOnFailureListener { exception ->
-                                    Log.e("TrainersViewModel", "Error executing batch operation: ${exception.message}", exception)
+                                } else {
+                                    Log.e("TrainersViewModel", "Trainer document does not exist.")
                                     viewModelScope.launchSafe {
                                         acceptedTraineeRequest.postValue(
                                             CommonActivity.NetworkResult.Error(
-                                                exception.message
+                                                "Trainer document does not exist."
                                             )
                                         )
                                     }
                                 }
-                            } else {
-                                Log.e("TrainersViewModel", "Trainer document does not exist.")
-                                viewModelScope.launchSafe {
-                                    acceptedTraineeRequest.postValue(
-                                        CommonActivity.NetworkResult.Error(
-                                            "Trainer document does not exist."
-                                        )
+                            }
+                        } else {
+                            Log.e("TrainersViewModel", "Trainee document does not exist.")
+                            viewModelScope.launchSafe {
+                                acceptedTraineeRequest.postValue(
+                                    CommonActivity.NetworkResult.Error(
+                                        "Trainee document does not exist."
                                     )
-                                }
+                                )
                             }
                         }
-                    } else {
-                        Log.e("TrainersViewModel", "Trainee document does not exist.")
-                        viewModelScope.launchSafe {
-                            acceptedTraineeRequest.postValue(
-                                CommonActivity.NetworkResult.Error(
-                                    "Trainee document does not exist."
-                                )
+                    }
+                } else {
+                    Log.e("TrainersViewModel", "Trainee request document does not exist.")
+                    viewModelScope.launchSafe {
+                        acceptedTraineeRequest.postValue(
+                            CommonActivity.NetworkResult.Error(
+                                "Trainee request document does not exist."
                             )
-                        }
+                        )
                     }
                 }
-            } else {
-                Log.e("TrainersViewModel", "Trainee request document does not exist.")
+            }.addOnFailureListener { exception ->
+                Log.e("TrainersViewModel", "Error fetching trainee request document: ${exception.message}", exception)
                 viewModelScope.launchSafe {
                     acceptedTraineeRequest.postValue(
                         CommonActivity.NetworkResult.Error(
-                            "Trainee request document does not exist."
+                            exception.message
                         )
                     )
                 }
             }
-        }.addOnFailureListener { exception ->
-            Log.e("TrainersViewModel", "Error fetching trainee request document: ${exception.message}", exception)
-            viewModelScope.launchSafe {
-                acceptedTraineeRequest.postValue(
-                    CommonActivity.NetworkResult.Error(
-                        exception.message
-                    )
-                )
-            }
         }
-    }
 
     fun rejectTraineeRequest(traineeUserId: String, trainerUserId: String) {
         viewModelScope.launchSafe { _rejectedTraineeRequest.postValue(CommonActivity.NetworkResult.Loading()) }
