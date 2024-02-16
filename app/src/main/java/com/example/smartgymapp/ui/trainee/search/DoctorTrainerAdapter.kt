@@ -71,7 +71,7 @@ class DoctorTrainerAdapter : RecyclerView.Adapter<DoctorTrainerAdapter.DoctorTra
                 userModel.userBookedIdsAccepted.contains(userId) -> {
                     text = "Booked"
                     isEnabled = false
-                    setBackgroundColor(context.getResourceColor(R.attr.colorPrimary))
+                    setBackgroundColor(context.getResourceColor(R.attr.colorAccent))
                 }
                 else -> {
                     text = "Book Now"

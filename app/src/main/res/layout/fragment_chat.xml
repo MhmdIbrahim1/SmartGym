@@ -25,7 +25,8 @@
                 android:fontFamily="@font/poppins_thin"
                 android:text="@string/trainers"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/v_2"
                 app:layout_constraintStart_toStartOf="@+id/v_1"
                 app:layout_constraintTop_toTopOf="@+id/h_1" />
 

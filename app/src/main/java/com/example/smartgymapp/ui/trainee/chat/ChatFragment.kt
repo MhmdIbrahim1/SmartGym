@@ -36,8 +36,9 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeGetTrainee()
+       // observeGetTrainee()
         setUpRecyclerView()
+        observeTrainers()
     }
 
     private fun setUpRecyclerView() {
@@ -46,6 +47,7 @@ class ChatFragment : Fragment() {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = traineeChatAdapter
+
             addItemDecoration(CommonActivity.ItemSpacingDecoration(16))
         }
     }
@@ -57,6 +59,31 @@ class ChatFragment : Fragment() {
                     when(result){
                          is NetworkResult.Loading ->{
                              showProgressBar()
+                        }
+
+                        is NetworkResult.Success ->{
+                            hideProgressBar()
+                            traineeChatAdapter.differ.submitList(result.data)
+                        }
+
+                        is NetworkResult.Error -> {
+                            hideProgressBar()
+                            Log.d("ChatFragment", "observeGetTrainee: ${result.message}")
+                        }
+
+                        else ->{}
+                    }
+                }
+            }
+        }
+    }
+    private fun observeTrainers() {
+        lifecycleScope.launchSafe {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+                chatViewModel.getTrainersFromUserCollection.collectLatest {result ->
+                    when(result){
+                        is NetworkResult.Loading ->{
+                            showProgressBar()
                         }
 
                         is NetworkResult.Success ->{

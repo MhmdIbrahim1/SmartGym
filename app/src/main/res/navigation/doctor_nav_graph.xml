@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/doctor_nav_graph"
+    app:startDestination="@id/doctorMainFragment">
+
+    <fragment
+        android:id="@+id/doctorMainFragment"
+        android:name="com.example.smartgymapp.ui.doctor.DoctorMainFragment"
+        android:label="fragment_doctor_main"
+        tools:layout="@layout/fragment_doctor_main" />
+    <fragment
+        android:id="@+id/doctorProfileFragment"
+        android:name="com.example.smartgymapp.ui.doctor.DoctorProfileFragment"
+        android:label="fragment_doctor_profile"
+        tools:layout="@layout/fragment_doctor_profile" />
+    <fragment
+        android:id="@+id/doctorChatFragment"
+        android:name="com.example.smartgymapp.ui.doctor.DoctorChatFragment"
+        android:label="fragment_doctor_chat"
+        tools:layout="@layout/fragment_doctor_chat" />
+</navigation>

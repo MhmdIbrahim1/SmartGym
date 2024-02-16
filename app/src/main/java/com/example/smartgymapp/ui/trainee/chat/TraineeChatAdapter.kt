@@ -34,6 +34,12 @@ class TraineeChatAdapter : RecyclerView.Adapter<TraineeChatAdapter.TraineeChatVi
                         userIv.setImageResource(R.drawable.man_user)
                     }
                 }
+
+                if (userModel.userType == "Doctor") {
+                    userTypeTv.text = root.context.getString(R.string.doctor)
+                } else {
+                    userTypeTv.text = root.context.getString(R.string.trainer)
+                }
             }
         }
     }

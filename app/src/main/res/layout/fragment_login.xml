@@ -55,8 +55,7 @@
             app:boxCornerRadiusTopStart="8dp"
             app:boxStrokeColor="@color/textColor"
             app:boxStrokeWidth="2dp"
-            app:counterTextColor="@color/colorPrimaryOrange"
-            app:hintTextColor="@color/colorPrimaryOrange">
+>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edEmail"
@@ -68,7 +67,6 @@
                 android:gravity="center_vertical"
                 android:hint="@string/hint_email"
                 android:inputType="textEmailAddress"
-                android:textColorHighlight="@color/colorPrimaryOrange"
                 android:textSize="@dimen/logintextdim" />
         </com.google.android.material.textfield.TextInputLayout>
 

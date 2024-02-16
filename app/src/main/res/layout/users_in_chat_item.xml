@@ -36,7 +36,18 @@
             app:layout_constraintStart_toEndOf="@id/user_iv"
             app:layout_constraintTop_toTopOf="@+id/user_iv"
             tools:text="name" />
-
+        <TextView
+            android:id="@+id/userType_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="@font/poppins_thin"
+            android:textColor="@color/colorPrimaryOrange"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/user_iv"
+            app:layout_constraintStart_toEndOf="@id/user_iv"
+            app:layout_constraintTop_toBottomOf="@+id/user_name_tv"
+            tools:text="type" />
         <ImageView
             android:id="@+id/chat_iv"
             android:layout_width="35dp"

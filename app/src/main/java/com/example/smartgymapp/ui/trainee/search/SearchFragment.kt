@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.FragmentSearchBinding
+import com.example.smartgymapp.util.CommonActivity
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,10 +17,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var pagerAdapter: FragmentsPagerAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,14 +39,11 @@ class SearchFragment : Fragment() {
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 binding.viewPagers2.currentItem = tab!!.position
-
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
         binding.viewPagers2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -53,6 +52,13 @@ class SearchFragment : Fragment() {
             }
         })
 
+        binding.backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
+    override fun onResume() {
+        super.onResume()
+        CommonActivity.hideBottomNav(requireActivity())
+    }
 }

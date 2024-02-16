@@ -38,7 +38,7 @@ class TrainersViewModel @Inject constructor(
         getAllTrainers()
     }
 
-    fun getAllTrainers() {
+    private fun getAllTrainers() {
         _getAllTrainers.value = CommonActivity.NetworkResult.Loading()
         firestore.collection("users")
             .whereEqualTo("userType", "Trainer")

@@ -111,6 +111,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     implementation("com.github.leandroborgesferreira:loading-button-android:2.3.0")
+
+    //glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
 // Allow references to generated code
 kapt {

@@ -113,7 +113,7 @@
                             android:layout_height="30dp"
                             android:layout_weight="1"
                             android:contentDescription="@string/v1"
-                            android:src="@drawable/searchicon" />
+                            android:src="@drawable/booking" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -152,7 +152,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/search"
+                            android:text="@string/booking"
                             android:textStyle="bold"
                             android:gravity="center"
                             android:textColor="@color/primaryBlackBackground"

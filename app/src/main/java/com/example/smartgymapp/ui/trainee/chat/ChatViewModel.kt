@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -25,9 +26,13 @@ class ChatViewModel @Inject constructor(
         MutableStateFlow<CommonActivity.NetworkResult<List<UserModel>>>(CommonActivity.NetworkResult.UnSpecified())
     val getTrainersFromUserCollection = _getTrainersFromUserCollection.asStateFlow()
 
+    private val _getTrainersAndDoctorsIds =
+        MutableStateFlow<CommonActivity.NetworkResult<List<String>>>(CommonActivity.NetworkResult.UnSpecified())
+    val getTrainersAndDoctorsIds = _getTrainersAndDoctorsIds.asStateFlow()
 
     init {
         getTrainersFromUserCollection()
+       // fetchTrainersAndDoctorsIds()
     }
 
     private fun getTrainersFromUserCollection() {
@@ -36,7 +41,7 @@ class ChatViewModel @Inject constructor(
 
             val trainersCollectionRef = firestore.collection("users")
                 .document(firebaseAuth.currentUser!!.uid)
-                .collection("Trainers")
+                .collection("BookedChat")
 
             try {
                 val snapshotListener = trainersCollectionRef.addSnapshotListener { snapshot, exception ->
@@ -78,4 +83,51 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+
+    fun fetchTrainersAndDoctorsIds() {
+        viewModelScope.launch {
+            _getTrainersAndDoctorsIds.emit(CommonActivity.NetworkResult.Loading())
+
+            try {
+                val trainerAndDoctorIds = mutableListOf<String>()
+
+                val querySnapshot = firestore.collection("users")
+                    .whereArrayContains("TrainersAndDoctors", "dummyValue") // Replace "dummyValue" with any non-empty string
+                    .get()
+                    .await()
+
+                if (querySnapshot.isEmpty) {
+                    _getTrainersAndDoctorsIds.emit(
+                        CommonActivity.NetworkResult.Error("No trainers and doctors found")
+                    )
+                    return@launch
+                }
+
+                for (document in querySnapshot.documents) {
+                    val userModel = document.toObject(UserModel::class.java)
+                    if (userModel?.TrainersAndDoctors.isNullOrEmpty()) {
+                        // Skip if the TrainersAndDoctors list is empty
+                        continue
+                    }
+                    trainerAndDoctorIds.addAll(userModel!!.TrainersAndDoctors)
+                }
+
+                if (trainerAndDoctorIds.isEmpty()) {
+                    _getTrainersAndDoctorsIds.emit(
+                        CommonActivity.NetworkResult.Error("No trainer or doctor IDs found")
+                    )
+                } else {
+                    _getTrainersAndDoctorsIds.emit(CommonActivity.NetworkResult.Success(trainerAndDoctorIds))
+                }
+            } catch (e: Exception) {
+                _getTrainersAndDoctorsIds.emit(
+                    CommonActivity.NetworkResult.Error(e.message ?: "Unknown Error")
+                )
+            }
+        }
+    }
+
+
+
 }
+

@@ -21,11 +21,19 @@
     <string name="program">Program\n</string>
     <string name="diet">diet</string>
     <string name="calender">Calender</string>
-    <string name="trainers">Trainers</string>
+    <string name="trainers">Chat with your trainers and doctors</string>
     <string name="main">Main</string>
     <string name="search">Search</string>
     <string name="doctor_trainer_image">doctor_trainer_image</string>
     <string name="book_now">Book Now</string>
     <string name="trainee_bookings">Trainee Bookings</string>
+    <string name="booking">Booking</string>
+    <string name="chat_with_your_patients">Chat with your Patients</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="update">Update</string>
+    <string name="user_type">User Type</string>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

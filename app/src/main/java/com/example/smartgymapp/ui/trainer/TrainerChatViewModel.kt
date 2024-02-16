@@ -35,7 +35,7 @@ class TrainerChatViewModel @Inject constructor(
 
             val traineesCollectionRef = firestore.collection("users")
                 .document(firebaseAuth.currentUser!!.uid)
-                .collection("Trainees")
+                .collection("BookedChat")
 
             try {
                 val snapshotListener = traineesCollectionRef.addSnapshotListener { snapshot, exception ->

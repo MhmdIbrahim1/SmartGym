@@ -57,20 +57,6 @@ class TraineeActivity : AppCompatActivity() {
             }
         }
 
-//        val userId = intent.extras?.getString("userId")
-//        FirebaseFirestore.getInstance().collection(USER_COLLECTION).document(userId!!).get()
-//            .addOnCompleteListener {task ->
-//                if (task.isSuccessful){
-//                    val model = task.result.toObject(UserModel::class.java)
-//                    if (model != null){
-//                        val intent = Intent(this, DoChatActivity::class.java)
-//                        CommonActivity.passUserModelAsIntent(intent, model)
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                        startActivity(intent)
-//                    }
-//                }
-//
-//            }
 
     }
 
@@ -100,55 +86,15 @@ class TraineeActivity : AppCompatActivity() {
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.trainee_fragment_container_view) as NavHostFragment
-        navHostFragment.navController.currentDestination?.let { updateNavBar(it) }
-    }
-
-    private fun updateNavBar(destination: NavDestination) {
-        //   this.hideKeyboard()
-
-        val dontPush = listOf(
-            R.id.mainFragment,
-            R.id.chatFragment,
-            R.id.profileFragment,
-            R.id.searchFragment
-        ).contains(destination.id)
-
-        binding.traineeFragmentContainerView.apply {
-            val params = layoutParams as ConstraintLayout.LayoutParams
-            val push =
-                if (!dontPush) resources.getDimensionPixelSize(R.dimen.navbar_width) else 0
-            if (!this.isLtr()) {
-                params.setMargins(
-                    params.leftMargin,
-                    params.topMargin,
-                    push,
-                    params.bottomMargin
-                )
-            } else {
-                params.setMargins(
-                    push,
-                    params.topMargin,
-                    params.rightMargin,
-                    params.bottomMargin
-                )
-            }
-            layoutParams = params
-        }
-    }
-
-    private fun getNFCToken(){
+    private fun getNFCToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
-            if(it.isSuccessful){
+            if (it.isSuccessful) {
                 val token = it.result
                 FirebaseFirestore.getInstance().collection("users")
                     .document(FirebaseAuth.getInstance().currentUser!!.uid)
                     .update("fcmToken", token)
                     .addOnCompleteListener {
-                        if (it.isSuccessful){
+                        if (it.isSuccessful) {
                             Log.d("FCM", "Token: $token")
                         }
                     }

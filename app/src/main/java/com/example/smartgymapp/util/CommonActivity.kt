@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -147,6 +148,7 @@ object CommonActivity {
             putExtra("userBookedIdsAccepted", userModel.userBookedIdsAccepted.toTypedArray())
             putExtra("userBookedIdsPending", userModel.userBookedIdsPending.toTypedArray())
             putExtra("userBookedIdsRejected", userModel.userBookedIdsRejected.toTypedArray())
+            putExtra("TrainersAndDoctors", userModel.TrainersAndDoctors.toTypedArray())
             putExtra("fcmToken", userModel.fcmToken)
         }
     }
@@ -162,9 +164,49 @@ object CommonActivity {
             intent.getStringArrayExtra("userBookedIdsAccepted")?.toList() ?: emptyList(),
             intent.getStringArrayExtra("userBookedIdsPending")?.toList() ?: emptyList(),
             intent.getStringArrayExtra("userBookedIdsRejected")?.toList() ?: emptyList(),
+            intent.getStringArrayExtra("TrainersAndDoctors")?.toList() ?: emptyList(),
             intent.getStringExtra("fcmToken") ?: ""
         )
     }
+
+    fun showBottomNav(requireActivity: FragmentActivity) {
+        requireActivity.findViewById<View>(R.id.nav_view).visibility = View.VISIBLE
+    }
+
+    fun hideBottomNav(requireActivity: FragmentActivity) {
+        requireActivity.findViewById<View>(R.id.nav_view).visibility = View.GONE
+    }
+
+    fun validateEmail(email: String): RegisterValidation {
+        if (email.isEmpty()) {
+            return RegisterValidation.Failed("Email cannot be empty")
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+            return RegisterValidation.Failed("Wrong email format")
+
+        return RegisterValidation.Success
+    }
+
+    fun validatePassword(password: String): RegisterValidation {
+        if (password.isEmpty()) {
+            return RegisterValidation.Failed("Password cannot be empty")
+        }
+        if (password.length < 6) {
+            return RegisterValidation.Failed("Password must be at least 6 characters")
+        }
+        return RegisterValidation.Success
+    }
+
+
+    sealed class RegisterValidation{
+        data object Success: RegisterValidation()
+        data class Failed(val message: String): RegisterValidation()
+    }
+
+    data class RegisterFailedState(
+        val email: RegisterValidation,
+        val password: RegisterValidation
+    )
 
 }
 

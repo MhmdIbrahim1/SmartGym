@@ -112,4 +112,10 @@ class MainFragment : Fragment() {
         binding.viewPager2.setPageTransformer(MarginPageTransformer(40))
         binding.dotsIndicator.attachTo(binding.viewPager2)
     }
+
+    override fun onResume() {
+        super.onResume()
+        //show bottom navigation
+        CommonActivity.showBottomNav(requireActivity())
+    }
 }

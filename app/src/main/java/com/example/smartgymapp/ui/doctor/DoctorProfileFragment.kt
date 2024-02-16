@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.trainee
+package com.example.smartgymapp.ui.doctor
 
 import android.content.Intent
 import android.net.Uri
@@ -19,8 +19,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.smartgymapp.R
-import com.example.smartgymapp.databinding.FragmentChatBinding
-import com.example.smartgymapp.databinding.FragmentProfileBinding
+import com.example.smartgymapp.databinding.FragmentDoctorsBinding
+import com.example.smartgymapp.databinding.FragmentTrainerProfileBinding
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.ui.trainer.ProfileViewModel
 import com.example.smartgymapp.util.CommonActivity
@@ -32,11 +32,9 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment() {
-    private lateinit var binding: FragmentProfileBinding
+class DoctorProfileFragment : Fragment() {
+    private lateinit var binding: FragmentTrainerProfileBinding
     private val userViewModel by activityViewModels<ProfileViewModel>()
-
-
 
     private lateinit var imageActivityResultLauncher: ActivityResultLauncher<Intent>
 
@@ -45,6 +43,8 @@ class ProfileFragment : Fragment() {
     private var getUserInfoJob: Job? = null
 
     private var imageUri: Uri? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -61,7 +61,7 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        binding = FragmentTrainerProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -77,6 +77,7 @@ class ProfileFragment : Fragment() {
             imageActivityResultLauncher.launch(intent)
         }
     }
+
     private fun observeGetTrainerUser() {
         getUserInfoJob?.cancel()
         getUserInfoJob = lifecycleScope.launch {
@@ -151,7 +152,7 @@ class ProfileFragment : Fragment() {
                     val uId = FirebaseAuth.getInstance().currentUser!!.uid
                     val userBookedIdsAccepted = userViewModel.getUser.value.data!!.userBookedIdsAccepted
                     val userBookedIdsPending = userViewModel.getUser.value.data!!.userBookedIdsPending
-                    val user = UserModel(uId, firstName, lastName, email, "Trainee", userBookedIdsAccepted, userBookedIdsPending)
+                    val user = UserModel(uId, firstName, lastName, email, "Doctor", userBookedIdsAccepted, userBookedIdsPending)
                     userViewModel.updateUser(user, imageUri)
                 }
                 // Revert button text and hide cancel button
@@ -229,5 +230,4 @@ class ProfileFragment : Fragment() {
         // Clear the updateInfo StateFlow when the view is destroyed
         userViewModel.clearUpdateInfo()
     }
-
 }

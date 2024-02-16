@@ -9,6 +9,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.bumptech.glide.Glide
 import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityDoChatBinding
 import com.example.smartgymapp.model.UserModel
@@ -38,11 +39,16 @@ class DoChatActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         otherUser = CommonActivity.getUserModelFromIntent(intent)
-        chatRoomId = FirebaseUtil().getCharRoomId(FirebaseAuth.getInstance().currentUser!!.uid, otherUser.userId)
+        chatRoomId = FirebaseUtil().getCharRoomId(
+            FirebaseAuth.getInstance().currentUser!!.uid,
+            otherUser.userId
+        )
 
 
-        chatRoomId = intent.getStringExtra("chatRoomId") ?:
-                FirebaseUtil().getCharRoomId(FirebaseAuth.getInstance().currentUser!!.uid, otherUser.userId)
+        chatRoomId = intent.getStringExtra("chatRoomId") ?: FirebaseUtil().getCharRoomId(
+            FirebaseAuth.getInstance().currentUser!!.uid,
+            otherUser.userId
+        )
 
         binding.backBtn.setOnClickListener {
             onBackPressed()
@@ -50,9 +56,9 @@ class DoChatActivity : AppCompatActivity() {
 
         binding.messageSendBtn.setOnClickListener {
             val message = binding.chatMessageInput.text.toString()
-            if (message.isEmpty()){
+            if (message.isEmpty()) {
                 return@setOnClickListener
-            }else{
+            } else {
                 sendMessageToUser(message);
                 //sendNotificationToUser(message)
             }
@@ -62,22 +68,19 @@ class DoChatActivity : AppCompatActivity() {
 
         binding.apply {
             otherUserName.text = "${otherUser.firstName} ${otherUser.lastName}"
-            lifecycleScope.launchSafe {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    withContext(Dispatchers.IO) {
-                        otherUser.profile_picture.let { imageUrl ->
-                            if (imageUrl.isNotEmpty()) {
-                                profilePicImageView.load(imageUrl) {
-                                    placeholder(R.drawable.man_user)
-                                    crossfade(true)
-                                }
-                            } else {
-                                profilePicImageView.setImageResource(R.drawable.man_user)
-                            }
-                        }
-                    }
+            otherUser.profile_picture.let { imageUrl ->
+                if (imageUrl.isNotEmpty()) {
+                    Glide.with(this@DoChatActivity)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.man_user)
+                        .centerCrop()
+                        .into(profilePicImageView)
+                } else {
+                    profilePicImageView.setImageResource(R.drawable.man_user)
                 }
             }
+
+
         }
         getOrCreateChatroomModel()
         setupChatRecyclerView()
@@ -161,7 +164,7 @@ class DoChatActivity : AppCompatActivity() {
             .setQuery(query, ChatMessageModel::class.java)
             .build()
 
-        chatAdapter = ChatRecyclerAdapter(options,applicationContext)
+        chatAdapter = ChatRecyclerAdapter(options, applicationContext)
         val manager = LinearLayoutManager(this)
         manager.reverseLayout = true
         binding.chatRecyclerView.layoutManager = manager
@@ -176,10 +179,12 @@ class DoChatActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun getOrCreateChatroomModel() {
-        val chatRoomId = FirebaseUtil().getCharRoomId(FirebaseAuth.getInstance().currentUser!!.uid, otherUser.userId)
+        val chatRoomId =
+            FirebaseUtil().getCharRoomId(
+                FirebaseAuth.getInstance().currentUser!!.uid,
+                otherUser.userId
+            )
         val chatRoomRef = FirebaseUtil().getChatRoomReference(chatRoomId)
         chatRoomRef.get().addOnSuccessListener {
             if (it.exists()) {
@@ -193,8 +198,10 @@ class DoChatActivity : AppCompatActivity() {
                 )
                 chatRoomRef.set(chatroomModel)
             }
-            Log.d("ChatroomModel",
-                Arrays.asList(FirebaseAuth.getInstance().currentUser!!.uid, otherUser.userId).toString()
+            Log.d(
+                "ChatroomModel",
+                Arrays.asList(FirebaseAuth.getInstance().currentUser!!.uid, otherUser.userId)
+                    .toString()
             )
         }
     }

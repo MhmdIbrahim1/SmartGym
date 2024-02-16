@@ -17,9 +17,9 @@
 
 
         <!-- DEF STYLE -->
-        <item name="colorPrimary">@color/colorPrimaryGreenApple</item>
+        <item name="colorPrimary">@color/colorPrimaryOrange</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryGreen</item>
         <item name="textColor">@color/textColor</item>
         <item name="colorOnPrimary">@color/whiteText</item>
         <item name="grayTextColor">@color/grayTextColor</item>
