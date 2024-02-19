@@ -67,6 +67,12 @@ class DoctorMainFragment : Fragment() {
                         is CommonActivity.NetworkResult.Success ->{
                             hideProgressBar()
                             mainTraineeRequestsAdapter.differ.submitList(result.data)
+
+                            if(result.data.isNullOrEmpty()){
+                                showNoTraineeRequests()
+                            }else{
+                                hideNoTraineeRequests()
+                            }
                         }
                         else ->{}
                     }
@@ -91,4 +97,15 @@ class DoctorMainFragment : Fragment() {
     private fun showProgressBar() {
         binding.progressBar.visibility = View.VISIBLE
     }
+    private fun showNoTraineeRequests() {
+        binding.noTraineeRequests.visibility = View.VISIBLE
+        binding.traineeBookings.visibility = View.GONE
+    }
+
+    private fun hideNoTraineeRequests() {
+        binding.noTraineeRequests.visibility = View.GONE
+        binding.traineeBookings.visibility = View.VISIBLE
+    }
+
+
 }

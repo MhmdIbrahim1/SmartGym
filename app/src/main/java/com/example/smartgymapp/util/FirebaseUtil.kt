@@ -1,9 +1,15 @@
 package com.example.smartgymapp.util
 
+import android.content.Context
+import android.content.Intent
+import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-
+import android.app.NotificationManager
+import android.net.Uri
+import android.provider.Settings
+import androidx.core.content.ContentProviderCompat.requireContext
 
 class FirebaseUtil {
 
@@ -19,7 +25,4 @@ class FirebaseUtil {
         val sortedIds = listOf(userId1.trim(), userId2.trim()).sorted()
         return sortedIds.joinToString("_")
     }
-
-
-
 }

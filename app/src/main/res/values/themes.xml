@@ -13,7 +13,7 @@
         <!--        <item name="textInputStyle">@style/TextInputLayoutTheme</item>-->
 
         <!--        <item name="bottomNavigationStyle">@style/CustomBottomNavigationViewStyle</item>-->
-        <item name="android:windowIsTranslucent">true</item>
+       <item name="android:windowIsTranslucent">true</item>
 
 
         <!-- DEF STYLE -->

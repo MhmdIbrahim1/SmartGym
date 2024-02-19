@@ -14,12 +14,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.MainThread
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
@@ -29,6 +31,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartgymapp.R
+import com.example.smartgymapp.SmartGymApp
 import com.example.smartgymapp.model.BookingStatus
 import com.example.smartgymapp.mvvm.logError
 import com.example.smartgymapp.model.UserModel
@@ -148,7 +151,6 @@ object CommonActivity {
             putExtra("userBookedIdsAccepted", userModel.userBookedIdsAccepted.toTypedArray())
             putExtra("userBookedIdsPending", userModel.userBookedIdsPending.toTypedArray())
             putExtra("userBookedIdsRejected", userModel.userBookedIdsRejected.toTypedArray())
-            putExtra("TrainersAndDoctors", userModel.TrainersAndDoctors.toTypedArray())
             putExtra("fcmToken", userModel.fcmToken)
         }
     }
@@ -164,7 +166,6 @@ object CommonActivity {
             intent.getStringArrayExtra("userBookedIdsAccepted")?.toList() ?: emptyList(),
             intent.getStringArrayExtra("userBookedIdsPending")?.toList() ?: emptyList(),
             intent.getStringArrayExtra("userBookedIdsRejected")?.toList() ?: emptyList(),
-            intent.getStringArrayExtra("TrainersAndDoctors")?.toList() ?: emptyList(),
             intent.getStringExtra("fcmToken") ?: ""
         )
     }
@@ -197,7 +198,7 @@ object CommonActivity {
         return RegisterValidation.Success
     }
 
-
+   // fun to check what is the current activity
     sealed class RegisterValidation{
         data object Success: RegisterValidation()
         data class Failed(val message: String): RegisterValidation()

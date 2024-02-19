@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.Coroutines.main
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -26,7 +28,8 @@ class TrainerChatViewModel @Inject constructor(
     val getTraineesFromUsersCollection = _getTraineesFromUsersCollection.asStateFlow()
 
     init {
-        getTraineesFromTraineeCollection()
+        getUsersFromUserBookedIdsAcceptedRealTime()
+        //getTraineesFromTraineeCollection()
     }
 
     private fun getTraineesFromTraineeCollection() {
@@ -76,5 +79,46 @@ class TrainerChatViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getUsersFromUserBookedIdsAcceptedRealTime() {
+        viewModelScope.launch {
+            _getTraineesFromUsersCollection.emit(CommonActivity.NetworkResult.Loading())
+
+            try {
+                val currentUserDocRef = firestore.collection("users").document(firebaseAuth.currentUser!!.uid)
+                currentUserDocRef.addSnapshotListener { currentUserSnapshot, _ ->
+                    currentUserSnapshot?.let { snapshot ->
+                        val userBookedIdsAccepted = snapshot.get("userBookedIdsAccepted") as? List<String>
+
+                        if (!userBookedIdsAccepted.isNullOrEmpty()) {
+                            val users = mutableListOf<UserModel>()
+
+                            for (userId in userBookedIdsAccepted) {
+                                val userDocRef = firestore.collection("users").document(userId)
+                                userDocRef.addSnapshotListener { userSnapshot, _ ->
+                                    userSnapshot?.let { snapshot ->
+                                        if (snapshot.exists()) {
+                                            val userModel = snapshot.toObject(UserModel::class.java)
+                                            userModel?.let { users.add(it) }
+                                        }
+                                    }
+                                    main {
+                                        _getTraineesFromUsersCollection.emit(CommonActivity.NetworkResult.Success(users))
+                                    }
+                                }
+                            }
+                        } else {
+                            main {
+                                _getTraineesFromUsersCollection.emit(CommonActivity.NetworkResult.Error("No trainees found"))
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                _getTraineesFromUsersCollection.emit(CommonActivity.NetworkResult.Error(e.message ?: "Unknown Error"))
+            }
+        }
+    }
+
 
 }

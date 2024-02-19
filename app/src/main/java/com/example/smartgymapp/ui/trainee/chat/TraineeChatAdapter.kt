@@ -37,8 +37,10 @@ class TraineeChatAdapter : RecyclerView.Adapter<TraineeChatAdapter.TraineeChatVi
 
                 if (userModel.userType == "Doctor") {
                     userTypeTv.text = root.context.getString(R.string.doctor)
-                } else {
+                } else if (userModel.userType == "Trainer"){
                     userTypeTv.text = root.context.getString(R.string.trainer)
+                } else {
+                    userTypeTv.text = root.context.getString(R.string.trainee)
                 }
             }
         }

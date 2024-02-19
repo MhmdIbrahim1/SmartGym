@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -22,9 +23,12 @@ import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.FragmentDoctorsBinding
 import com.example.smartgymapp.databinding.FragmentTrainerProfileBinding
 import com.example.smartgymapp.model.UserModel
+import com.example.smartgymapp.ui.login.LoginActivity
 import com.example.smartgymapp.ui.trainer.ProfileViewModel
 import com.example.smartgymapp.util.CommonActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -44,6 +48,7 @@ class DoctorProfileFragment : Fragment() {
 
     private var imageUri: Uri? = null
 
+    private lateinit var fcmtoken: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +58,8 @@ class DoctorProfileFragment : Fragment() {
                 imageUri = it.data?.data
                 Glide.with(this).load(imageUri).into(binding.imageUser)
             }
+
+        getNFCToken()
 
     }
 
@@ -75,6 +82,10 @@ class DoctorProfileFragment : Fragment() {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             imageActivityResultLauncher.launch(intent)
+        }
+
+        binding.tvLogout.setOnClickListener {
+            showLogoutConfirmationDialog()
         }
     }
 
@@ -152,7 +163,17 @@ class DoctorProfileFragment : Fragment() {
                     val uId = FirebaseAuth.getInstance().currentUser!!.uid
                     val userBookedIdsAccepted = userViewModel.getUser.value.data!!.userBookedIdsAccepted
                     val userBookedIdsPending = userViewModel.getUser.value.data!!.userBookedIdsPending
-                    val user = UserModel(uId, firstName, lastName, email, "Doctor", userBookedIdsAccepted, userBookedIdsPending)
+                    val user = UserModel(
+                        uId,
+                        firstName,
+                        lastName,
+                        email,
+                        "Doctor",
+                        userViewModel.getUser.value.data!!.profile_picture,
+                        userBookedIdsAccepted,
+                        userBookedIdsPending,
+                        fcmtoken
+                        )
                     userViewModel.updateUser(user, imageUri)
                 }
                 // Revert button text and hide cancel button
@@ -216,6 +237,7 @@ class DoctorProfileFragment : Fragment() {
         }
     }
 
+
     private fun unblockUserInput() {
         binding.apply {
             edFirstName.isEnabled = true
@@ -224,6 +246,38 @@ class DoctorProfileFragment : Fragment() {
         }
     }
 
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Logout")
+        builder.setMessage("Are you sure you want to logout?")
+        builder.setPositiveButton("Yes") { _, _ ->
+            FirebaseMessaging.getInstance().deleteToken()
+            FirebaseAuth.getInstance().signOut()
+            Intent(requireActivity(), LoginActivity::class.java).also {
+                it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(it)
+            }
+        }
+        builder.setNegativeButton("No") { _, _ -> }
+        builder.show()
+    }
+
+    private fun getNFCToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful) {
+                val token = it.result
+                FirebaseFirestore.getInstance().collection("users")
+                    .document(FirebaseAuth.getInstance().currentUser!!.uid)
+                    .update("fcmToken", token)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Log.d("FCM", "Token: $token")
+                            fcmtoken = token
+                        }
+                    }
+            }
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
 

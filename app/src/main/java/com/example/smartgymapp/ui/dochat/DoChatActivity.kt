@@ -1,8 +1,12 @@
 package com.example.smartgymapp.ui.dochat
 
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -19,12 +23,20 @@ import com.example.smartgymapp.util.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import org.json.JSONObject
 import java.util.Arrays
 
+private const val NOTIFICATION_CHANNEL_ID = "com.example.smartgymapp.ui.dochat"
 @AndroidEntryPoint
 class DoChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDoChatBinding
@@ -32,6 +44,10 @@ class DoChatActivity : AppCompatActivity() {
     private lateinit var otherUser: UserModel
     private lateinit var chatroomModel: ChatroomModel
     private lateinit var chatAdapter: ChatRecyclerAdapter
+
+    private val batchSize = 10
+    private var lastVisibleMessage: DocumentSnapshot? = null
+    private var isLoading = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,6 +66,10 @@ class DoChatActivity : AppCompatActivity() {
             otherUser.userId
         )
 
+        // log the getIntent  data
+        Log.d("DoChatActivity", "All data from intent: ${intent.extras}")
+
+
         binding.backBtn.setOnClickListener {
             onBackPressed()
         }
@@ -60,7 +80,7 @@ class DoChatActivity : AppCompatActivity() {
                 return@setOnClickListener
             } else {
                 sendMessageToUser(message);
-                //sendNotificationToUser(message)
+                sendNotificationToUser(message)
             }
         }
 
@@ -86,47 +106,67 @@ class DoChatActivity : AppCompatActivity() {
         setupChatRecyclerView()
     }
 
-//    private fun sendNotificationToUser(message: String) {
-//        FirebaseFirestore.getInstance().collection("users")
-//            .document(FirebaseAuth.getInstance().currentUser!!.uid)
-//            .get().addOnCompleteListener {
-//                if (it.isSuccessful){
-//                    val userModel = it.result?.toObject(UserModel::class.java)
-//                    try {
-//                        val jsonObject = JSONObject()
-//                        val notificationObject = JSONObject()
-//                        notificationObject.put("title", "${userModel?.firstName} ${userModel?.lastName}")
-//                        notificationObject.put("body", message)
-//
-//                        val dataObject = JSONObject()
-//                        dataObject.put("userId", userModel?.userId)
-//
-//                        jsonObject.put("notification", notificationObject)
-//                        jsonObject.put("data", dataObject)
-//                        jsonObject.put("to", otherUser.fcmToken)
-//
-//                        callApi(jsonObject)
-//
-//                    }catch (e: Exception){
-//                        e.printStackTrace()
-//                    }
-//                }
-//            }
-//    }
+    private fun sendNotificationToUser(message: String) {
+        try {
+            FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().currentUser!!.uid)
+                .get().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val userModel = task.result!!.toObject(UserModel::class.java)
+                        if (userModel != null) {
+                            try {
+                                val notificationObject = JSONObject()
+                                notificationObject.put("title", userModel.firstName + " " + userModel.lastName)
+                                notificationObject.put("body", message)
+                                notificationObject.put("sound", "default")
+                                notificationObject.put("icon", R.drawable.icon_send)
 
-//    fun callApi(jsonObject: JSONObject){
-//        val json  = "application/json; charset=utf-8".toMediaType()
-//        val client = okhttp3.OkHttpClient()
-//        val url = "https://fcm.googleapis.com/fcm/send"
-//        val body = RequestBody.create(json, jsonObject.toString())
-//        val request = okhttp3.Request.Builder()
-//            .url(url)
-//            .post(body)
-//            .header("Authorization", "Bearer AAAA9ko5xrQ:APA91bGj2TeIUwq4v9jloJ2sOxwBBfIdI-WWduF7lWBxnYvrf7dsuZXcDBdXt1nGHwGeIBq9yGDk4hnIHZEa0q78KGGnxi6qQv7IpwovRR6PyUDSAcMYFdxrF1S-uqwqUiDfapHZQzj7")
-//            .build()
-//        client.newCall(request).execute()
-//
-//    }
+
+                                val dataObject = JSONObject()
+                                dataObject.put("message", message)
+                                dataObject.put("userId", userModel.userId)
+
+                                val jsonObject = JSONObject()
+                                jsonObject.put("notification", notificationObject)
+                                jsonObject.put("data", dataObject)
+                                jsonObject.put("to", otherUser.fcmToken)
+
+                                Log.d("Notification JSON", jsonObject.toString()) // Log JSON structure
+
+                                // Make API call to FCM
+                                lifecycleScope.launchSafe {
+                                    withContext(Dispatchers.IO) {
+                                        callApi(jsonObject)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("Notification", "Error sending notification: ${e.message}")
+        }
+    }
+
+
+
+    fun callApi(jsonObject: JSONObject) {
+        val json = "application/json; charset=utf-8".toMediaType()
+        val client = OkHttpClient()
+        val url = "https://fcm.googleapis.com/fcm/send"
+        val body = RequestBody.create(json, jsonObject.toString())
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .header("Authorization", "Bearer AAAA9ko5xrQ:APA91bGj2TeIUwq4v9jloJ2sOxwBBfIdI-WWduF7lWBxnYvrf7dsuZXcDBdXt1nGHwGeIBq9yGDk4hnIHZEa0q78KGGnxi6qQv7IpwovRR6PyUDSAcMYFdxrF1S-uqwqUiDfapHZQzj7") // Replace with your server key
+            .build()
+        val response = client.newCall(request).execute()
+        val responseBody = response.body?.string()
+        Log.d("FCM Response", responseBody ?: "Empty response")
+    }
+
 
 
     private fun sendMessageToUser(message: String) {
@@ -177,7 +217,6 @@ class DoChatActivity : AppCompatActivity() {
             }
         })
     }
-
 
     private fun getOrCreateChatroomModel() {
         val chatRoomId =

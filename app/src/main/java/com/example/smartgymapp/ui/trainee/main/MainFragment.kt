@@ -19,6 +19,7 @@ import com.example.smartgymapp.databinding.FragmentMainBinding
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.util.CommonActivity
 import com.example.smartgymapp.util.CommonActivity.NetworkResult
+import com.example.smartgymapp.util.CommonActivity.showToast
 import com.example.smartgymapp.util.UiHelper.navigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -55,6 +56,27 @@ class MainFragment : Fragment() {
         binding.searchTv.setOnClickListener {
             if (Navigation.findNavController(binding.root).currentDestination?.id == R.id.mainFragment) {
                 findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
+            }
+        }
+
+        binding.programIv.setOnClickListener {
+            if (Navigation.findNavController(binding.root).currentDestination?.id == R.id.mainFragment) {
+                showToast(requireActivity(), "Still in development")
+            }
+        }
+        binding.programTv.setOnClickListener {
+            if (Navigation.findNavController(binding.root).currentDestination?.id == R.id.mainFragment) {
+                showToast(requireActivity(), "Still in development")
+            }
+        }
+        binding.dietIv.setOnClickListener {
+            if (Navigation.findNavController(binding.root).currentDestination?.id == R.id.mainFragment) {
+                showToast(requireActivity(), "Still in development")
+            }
+        }
+        binding.dietTv.setOnClickListener {
+            if (Navigation.findNavController(binding.root).currentDestination?.id == R.id.mainFragment) {
+                showToast(requireActivity(), "Still in development")
             }
         }
     }

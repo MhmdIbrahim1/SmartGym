@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SmartGymApp</string>
+    <string name="app_name">SmartFit</string>
     <string name="tv_no_focus_tag" translatable="false">tv_no_focus_tag</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -10,7 +10,7 @@
     <string name="lets_login">Lets Login</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="for_more_details_follow_this_link_www_powerhour_com_info">For more details follow this link\n  www.powerhour.com/info</string>
+    <string name="for_more_details_follow_this_link_www_powerhour_com_info">For more details follow this link\n https://smartfit-web.vercel.app/"</string>
     <string name="login">Login</string>
     <string name="user">Trainee</string>
     <string name="trainer">Trainer</string>
@@ -35,5 +35,10 @@
     <string name="user_type">User Type</string>
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
+    <string name="chat_with_your_trainees">Chat with your Trainees</string>
+    <string name="trainee">Trainee</string>
+    <string name="log_out">Log out</string>
+    <string name="no_trainee_requests">No Trainee Requests</string>
+    <string name="_12_00">12:00</string>
 
 </resources>

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartgymapp.model.BookingStatus
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.util.CommonActivity
@@ -35,7 +34,6 @@ class MainTrainerViewModel @Inject constructor(
 
     private val _rejectedTraineeRequest =
         MutableLiveData<CommonActivity.NetworkResult<UserModel>>(CommonActivity.NetworkResult.UnSpecified())
-    val rejectedTraineeRequestLiveData: LiveData<CommonActivity.NetworkResult<UserModel>> = _rejectedTraineeRequest
 
     init {
         getAllTrainees()
@@ -48,7 +46,7 @@ class MainTrainerViewModel @Inject constructor(
         firestore.collection("users")
             .document(auth.currentUser!!.uid)
             .collection("traineeRequests")
-            .addSnapshotListener() { value, error ->
+            .addSnapshotListener { value, error ->
                 if (error != null) {
                     viewModelScope.launchSafe {
                         _getAllTraineesRequest.emit(CommonActivity.NetworkResult.Error(error.message))
@@ -84,15 +82,6 @@ class MainTrainerViewModel @Inject constructor(
                                 val trainer = trainerSnapshot.toObject(UserModel::class.java)
                                 if (trainer != null) {
                                     firestore.runBatch { batch ->
-                                        // Add Accepted trainee into user Trainees Sub-collection
-                                        val trainerTraineesRef = firestore.collection("users").document(trainerUserId)
-                                            .collection("BookedChat")
-                                        batch.set(trainerTraineesRef.document(traineeUserId), trainee)
-
-                                        // Add Current Trainer into user's Trainers Sub-collection
-                                        val traineeTrainersRef = firestore.collection("users").document(traineeUserId)
-                                            .collection("BookedChat")
-                                        batch.set(traineeTrainersRef.document(trainerUserId), trainer)
 
                                         // Add the traineeUserId to the userBookedIdsAccepted list in the trainer's document
                                         val trainerDocumentRef = firestore.collection("users").document(trainerUserId)

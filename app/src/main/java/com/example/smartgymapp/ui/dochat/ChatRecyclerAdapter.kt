@@ -10,6 +10,8 @@ import com.example.smartgymapp.databinding.ChatMessageRecyclerRowBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ChatRecyclerAdapter(options: FirestoreRecyclerOptions<ChatMessageModel>, context: Context):
     FirestoreRecyclerAdapter<ChatMessageModel, ChatRecyclerAdapter.ChatModelViewHolder>(options) {
@@ -31,16 +33,19 @@ class ChatRecyclerAdapter(options: FirestoreRecyclerOptions<ChatMessageModel>, c
         position: Int,
         model: ChatMessageModel
     ) {
+        val sdf = SimpleDateFormat("h:mm a", Locale.getDefault())
+        val formattedTime = sdf.format(model.timestamp.toDate())
         if (model.senderId == FirebaseAuth.getInstance().currentUser!!.uid) {
             holder.binding.leftChatLayout.visibility = View.GONE;
             holder.binding.rightChatLayout.visibility = View.VISIBLE;
             holder.binding.rightChatTextview.text = model.message;
+            holder.binding.rightChatTime.text = formattedTime;
         } else {
             holder.binding.leftChatLayout.visibility = View.VISIBLE;
             holder.binding.rightChatLayout.visibility = View.GONE;
             holder.binding.leftChatTextview.text = model.message;
+            holder.binding.leftChatTime.text = formattedTime;
         }
     }
-
 
 }

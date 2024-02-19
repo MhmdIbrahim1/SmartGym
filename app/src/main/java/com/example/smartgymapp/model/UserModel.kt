@@ -14,21 +14,21 @@ data class UserModel(
     var userBookedIdsAccepted: List<String> = emptyList(),
     var userBookedIdsPending: List<String> = emptyList(),
     var userBookedIdsRejected: List<String> = emptyList(),
-    val TrainersAndDoctors: List<String> = emptyList(),
-
     val fcmToken: String = ""
 
 ) : Parcelable {
-    constructor() : this("", "", "", "", "", "")
-    constructor(userId:String, firstName: String, lastName: String, email: String, userType: String, userBookedIdsAccepted: List<String>, userBookedIdsPending: List<String>) : this(
+    constructor() : this("", "", "", "", "", "", emptyList(), emptyList(), emptyList(), "")
+    constructor(userId:String, firstName: String, lastName: String, email: String, userType: String,profile_picture: String, userBookedIdsAccepted: List<String>, userBookedIdsPending: List<String>,fcmToken: String) : this(
         userId,
         firstName,
         lastName,
         email,
         userType,
-        "",
+        profile_picture,
         userBookedIdsAccepted,
-        userBookedIdsPending
+        userBookedIdsPending,
+        emptyList(),
+        fcmToken
     )
 }
 

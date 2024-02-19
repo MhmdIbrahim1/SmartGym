@@ -83,15 +83,6 @@ class MainDoctorViewModel @Inject constructor(
                             val trainer = trainerSnapshot.toObject(UserModel::class.java)
                             if (trainer != null) {
                                 firestore.runBatch { batch ->
-                                    // Add Accepted trainee into user Trainees Sub-collection
-                                    val trainerTraineesRef = firestore.collection("users").document(trainerUserId)
-                                        .collection("BookedChat")
-                                    batch.set(trainerTraineesRef.document(traineeUserId), trainee)
-
-                                    // Add Current Trainer into user's Trainers Sub-collection
-                                    val traineeTrainersRef = firestore.collection("users").document(traineeUserId)
-                                        .collection("BookedChat")
-                                    batch.set(traineeTrainersRef.document(trainerUserId), trainer)
 
                                     // Add the traineeUserId to the userBookedIdsAccepted list in the trainer's document
                                     val trainerDocumentRef = firestore.collection("users").document(trainerUserId)

@@ -1,6 +1,7 @@
 package com.example.smartgymapp.ui.login
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.example.smartgymapp.util.CommonActivity.NetworkResult
 import com.example.smartgymapp.util.CommonActivity.showToast
 import com.example.smartgymapp.util.Coroutines.ioSafe
 import com.example.smartgymapp.util.Coroutines.main
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -43,6 +45,11 @@ class LoginFragment : Fragment() {
         performLogin()
         binding.backArrow.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
+        binding.textWebsiteLink.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://smartfit-web.vercel.app/"))
+            startActivity(intent)
         }
     }
 
@@ -83,7 +90,7 @@ class LoginFragment : Fragment() {
                             binding.loginBtn.isEnabled = true
                             hideProgressBar()
                             val intent = when (selectedUserType) {
-                                TRAINING-> Intent(requireContext(), TraineeActivity::class.java)
+                                TRAINING -> Intent(requireContext(), TraineeActivity::class.java)
                                 TRAINER -> Intent(requireContext(), TrainerActivity::class.java)
                                 DOCTOR -> Intent(requireContext(), DoctorActivity::class.java)
                                 else -> null
@@ -107,11 +114,13 @@ class LoginFragment : Fragment() {
             }
         }
     }
-    companion object{
+
+    companion object {
         const val TRAINING = "Trainee"
         const val TRAINER = "Trainer"
         const val DOCTOR = "Doctor"
     }
+
     private fun showProgressBar() {
         binding.progressBar.visibility = View.VISIBLE
     }

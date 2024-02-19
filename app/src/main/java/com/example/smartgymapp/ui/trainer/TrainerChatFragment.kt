@@ -17,6 +17,7 @@ import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.ui.trainee.chat.ChatViewModel
 import com.example.smartgymapp.ui.trainee.chat.TraineeChatAdapter
 import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.Coroutines.main
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 

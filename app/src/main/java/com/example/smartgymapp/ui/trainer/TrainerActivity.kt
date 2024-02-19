@@ -1,13 +1,22 @@
 package com.example.smartgymapp.ui.trainer
 
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.IdRes
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -20,6 +29,10 @@ import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityTrainerBinding
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
 import com.example.smartgymapp.util.CommonActivity.isLtr
+import com.example.smartgymapp.util.FirebaseUtil
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,11 +40,66 @@ import dagger.hilt.android.AndroidEntryPoint
 class TrainerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrainerBinding
     private lateinit var navController: NavController
+
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            hasNotificationPermissionGranted = isGranted
+            if (!isGranted) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
+                            showNotificationPermissionRationale()
+                        } else {
+                            showSettingDialog()
+                        }
+                    }
+                }
+            }
+        }
+
+    private fun showSettingDialog() {
+        MaterialAlertDialogBuilder(this, com.google.android.material.R.style.MaterialAlertDialog_Material3)
+            .setTitle("Notification Permission")
+            .setMessage("Notification permission is required, Please allow notification permission from setting")
+            .setPositiveButton("Ok") { _, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showNotificationPermissionRationale() {
+
+        MaterialAlertDialogBuilder(this, com.google.android.material.R.style.MaterialAlertDialog_Material3)
+            .setTitle("Alert")
+            .setMessage("Notification permission is required, to show notification")
+            .setPositiveButton("Ok") { _, _ ->
+                if (Build.VERSION.SDK_INT >= 33) {
+                    notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private var hasNotificationPermissionGranted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrainerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         getNFCToken()
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            hasNotificationPermissionGranted = true
+        }
+
+
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.trainer_nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
@@ -132,12 +200,54 @@ class TrainerActivity : AppCompatActivity() {
         }
     }
 
-    private fun getNFCToken(){
+    private fun getNFCToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
-            if(it.isSuccessful){
+            if (it.isSuccessful) {
                 val token = it.result
-                Log.d("FCM", "Token: $token")
+                FirebaseFirestore.getInstance().collection("users")
+                    .document(FirebaseAuth.getInstance().currentUser!!.uid)
+                    .update("fcmToken", token)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Log.d("FCM", "Token: $token")
+                        }
+                    }
             }
         }
     }
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create a dialog to prompt the user to grant notification permission
+            AlertDialog.Builder(this)
+                .setTitle("Notification Permission Required")
+                .setMessage("Please grant permission to receive notifications.")
+                .setPositiveButton("Allow") { dialog, _ ->
+                    // Handle allow button click
+                    // You can proceed with enabling notifications here
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Deny") { dialog, _ ->
+                    // Handle deny button click
+                    // You can show a message or take any other action here
+                    dialog.dismiss()
+                }
+                .setCancelable(false) // Prevent dismissing dialog by clicking outside of it
+                .show()
+        }
+    }
+
+    // Call this function where you need to request notification permission
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager =
+                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationChannel =
+                notificationManager.getNotificationChannel(NotificationManager.IMPORTANCE_DEFAULT.toString())
+            if (notificationChannel != null && notificationChannel.importance == NotificationManager.IMPORTANCE_NONE) {
+                // If the notification channel importance is none, request notification permission
+                requestNotificationPermission()
+            }
+        }
+    }
+
 }

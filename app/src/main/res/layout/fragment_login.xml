@@ -54,8 +54,7 @@
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
             app:boxStrokeColor="@color/textColor"
-            app:boxStrokeWidth="2dp"
->
+            app:boxStrokeWidth="2dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edEmail"
@@ -178,7 +177,7 @@
         app:layout_constraintTop_toBottomOf="@+id/whoWillLoginRadioGroup" />
 
     <TextView
-        android:id="@+id/forgotPassword"
+        android:id="@+id/textWebsiteLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"

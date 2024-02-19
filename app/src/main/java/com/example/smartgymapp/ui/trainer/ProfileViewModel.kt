@@ -3,7 +3,6 @@ package com.example.smartgymapp.ui.trainer
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.CommonActivity
@@ -24,6 +23,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.example.smartgymapp.SmartGymApp
 
+@Suppress("DEPRECATION")
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val auth: FirebaseAuth,
@@ -143,8 +143,6 @@ class ProfileViewModel @Inject constructor(
     private fun updateUserInTrainersCollection(user: UserModel) {
         viewModelScope.launch {
             try {
-                // Log the start of the function
-                Log.d(TAG, "Updating user in Trainers sub-collection: ${user.userId}, $user")
                 // Retrieve the list of userBookedIdsAccepted for the current user
                 val currentUserBookedIdsAccepted = user.userBookedIdsAccepted
                 // Update the Trainers sub-collection for each user in the userBookedIdsAccepted list
@@ -155,7 +153,7 @@ class ProfileViewModel @Inject constructor(
                         .addOnSuccessListener {
                             // No action needed
                         }
-                        .addOnFailureListener { exception ->
+                        .addOnFailureListener { _ ->
                             // No action needed
                         }
                 }

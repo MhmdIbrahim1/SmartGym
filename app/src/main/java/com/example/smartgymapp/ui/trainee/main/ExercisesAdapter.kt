@@ -1,11 +1,13 @@
 package com.example.smartgymapp.ui.trainee.main
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smartgymapp.databinding.ExercisesItemBinding
 
-class ExercisesAdapter(private val exerciseItem: List<ExerciseItem>) : RecyclerView.Adapter<ExercisesAdapter.ExerciseViewHolder>(){
+class ExercisesAdapter(private val exerciseItem: List<ExerciseItem>) :
+    RecyclerView.Adapter<ExercisesAdapter.ExerciseViewHolder>() {
 
     inner class ExerciseViewHolder(val binding: ExercisesItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -29,10 +31,12 @@ class ExercisesAdapter(private val exerciseItem: List<ExerciseItem>) : RecyclerV
             exerciseName.text = exerciseItem.exerciseName
         }
 
-        if (onExerciseClickListener != null) {
-            holder.itemView.setOnClickListener {
-                onExerciseClickListener!!.onExerciseClick(position, exerciseItem)
-            }
+        holder.itemView.setOnClickListener {
+            val url = "https://smartfit-web.vercel.app/"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = android.net.Uri.parse(url)
+            holder.itemView.context.startActivity(i)
+
         }
     }
 
@@ -40,7 +44,7 @@ class ExercisesAdapter(private val exerciseItem: List<ExerciseItem>) : RecyclerV
         return exerciseItem.size
     }
 
-    data class ExerciseItem(val exerciseImage: Int ,val exerciseName: String)
+    data class ExerciseItem(val exerciseImage: Int, val exerciseName: String)
 
     var onExerciseClickListener: OnExerciseClickListener? = null
 

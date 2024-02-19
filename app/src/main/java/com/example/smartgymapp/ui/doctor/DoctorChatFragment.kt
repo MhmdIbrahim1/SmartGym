@@ -16,6 +16,7 @@ import com.example.smartgymapp.databinding.FragmentDoctorChatBinding
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.ui.trainee.chat.TraineeChatAdapter
 import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.Coroutines.main
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -49,7 +50,7 @@ class DoctorChatFragment : Fragment() {
 
                         is CommonActivity.NetworkResult.Success ->{
                             hideProgressBar()
-                            traineeChatAdapter.differ.submitList(result.data)
+                           traineeChatAdapter.differ.submitList(result.data)
                             Log.d("ChatFragment", "observeGetTrainee: ${result.data}")
                         }
 

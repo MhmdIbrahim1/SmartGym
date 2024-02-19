@@ -229,6 +229,27 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.08" />
 
+            <LinearLayout
+                android:id="@+id/linearLayoutLogout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@id/rightGuideline"
+                app:layout_constraintStart_toStartOf="@id/leftGuideline"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/log_out"
+                    android:fontFamily="@font/poppins_thin"
+                    android:textColor="@color/colorPrimaryRed"
+                    android:textSize="18sp"
+                    app:drawableEndCompat="@drawable/logout" />
+
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
