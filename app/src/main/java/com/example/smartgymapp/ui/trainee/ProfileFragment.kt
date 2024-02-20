@@ -20,11 +20,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.smartgymapp.R
-import com.example.smartgymapp.databinding.FragmentChatBinding
 import com.example.smartgymapp.databinding.FragmentProfileBinding
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.ui.login.LoginActivity
-import com.example.smartgymapp.ui.trainer.ProfileViewModel
+import com.example.smartgymapp.ui.trainer.tProfile.ProfileViewModel
 import com.example.smartgymapp.util.CommonActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

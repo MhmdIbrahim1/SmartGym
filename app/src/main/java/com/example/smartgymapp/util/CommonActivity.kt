@@ -36,6 +36,11 @@ import com.example.smartgymapp.model.BookingStatus
 import com.example.smartgymapp.mvvm.logError
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.UiHelper.toPx
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import org.json.JSONObject
 import kotlin.math.roundToInt
 
 object UiHelper{
@@ -67,6 +72,7 @@ object UiHelper{
 }
 
 object CommonActivity {
+    val SERVER_KEY = "AAAA9ko5xrQ:APA91bGj2TeIUwq4v9jloJ2sOxwBBfIdI-WWduF7lWBxnYvrf7dsuZXcDBdXt1nGHwGeIBq9yGDk4hnIHZEa0q78KGGnxi6qQv7IpwovRR6PyUDSAcMYFdxrF1S-uqwqUiDfapHZQzj7"
     const val TAG = "COMPACT"
     var currentToast: Toast? = null
     @MainThread
@@ -198,7 +204,22 @@ object CommonActivity {
         return RegisterValidation.Success
     }
 
-   // fun to check what is the current activity
+    fun callApi(jsonObject: JSONObject) {
+        val json = "application/json; charset=utf-8".toMediaType()
+        val client = OkHttpClient()
+        val url = "https://fcm.googleapis.com/fcm/send"
+        val body = RequestBody.create(json, jsonObject.toString())
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .header("Authorization", "Bearer $SERVER_KEY")
+            .build()
+        val response = client.newCall(request).execute()
+        val responseBody = response.body?.string()
+        Log.d("FCM Response", responseBody ?: "Empty response")
+    }
+
+
     sealed class RegisterValidation{
         data object Success: RegisterValidation()
         data class Failed(val message: String): RegisterValidation()

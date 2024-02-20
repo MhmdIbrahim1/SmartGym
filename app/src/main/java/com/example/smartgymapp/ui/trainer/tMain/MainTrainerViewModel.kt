@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.trainer
+package com.example.smartgymapp.ui.trainer.tMain
 
 import android.util.Log
 import androidx.lifecycle.LiveData

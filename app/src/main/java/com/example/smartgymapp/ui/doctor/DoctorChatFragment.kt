@@ -11,12 +11,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.FragmentDoctorChatBinding
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.ui.trainee.chat.TraineeChatAdapter
 import com.example.smartgymapp.util.CommonActivity
-import com.example.smartgymapp.util.Coroutines.main
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -28,7 +26,7 @@ class DoctorChatFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         binding = FragmentDoctorChatBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -41,17 +39,21 @@ class DoctorChatFragment : Fragment() {
 
     private fun observeGetTrainee() {
         lifecycleScope.launchSafe {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
-                chatViewModel.getTraineesFromUsersCollection.collectLatest { result ->
-                    when(result){
-                        is CommonActivity.NetworkResult.Loading ->{
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                chatViewModel.getUsersFromUserBookedIdsAccepted.collectLatest { result ->
+                    when (result) {
+                        is CommonActivity.NetworkResult.Loading -> {
                             showProgressBar()
                         }
 
-                        is CommonActivity.NetworkResult.Success ->{
+                        is CommonActivity.NetworkResult.Success -> {
                             hideProgressBar()
-                           traineeChatAdapter.differ.submitList(result.data)
-                            Log.d("ChatFragment", "observeGetTrainee: ${result.data}")
+                            traineeChatAdapter.differ.submitList(result.data)
+                            if (result.data.isNullOrEmpty()) {
+                                showNoPatient()
+                            } else {
+                                hideNoPatient()
+                            }
                         }
 
                         is CommonActivity.NetworkResult.Error -> {
@@ -59,7 +61,7 @@ class DoctorChatFragment : Fragment() {
                             Log.d("ChatFragment", "observeGetTrainee: ${result.message}")
                         }
 
-                        else ->{}
+                        else -> {}
                     }
                 }
             }
@@ -75,6 +77,7 @@ class DoctorChatFragment : Fragment() {
             addItemDecoration(CommonActivity.ItemSpacingDecoration(16))
         }
     }
+
     private fun showProgressBar() {
         binding.progressBar.visibility = View.VISIBLE
     }
@@ -82,4 +85,16 @@ class DoctorChatFragment : Fragment() {
     private fun hideProgressBar() {
         binding.progressBar.visibility = View.GONE
     }
+
+    private fun showNoPatient() {
+        binding.noPatientsTv.visibility = View.VISIBLE
+        binding.traineeChatRv.visibility = View.GONE
+    }
+
+    private fun hideNoPatient() {
+        binding.noPatientsTv.visibility = View.GONE
+        binding.traineeChatRv.visibility = View.VISIBLE
+    }
+
+
 }

@@ -19,6 +19,7 @@ import com.example.smartgymapp.databinding.ActivityDoChatBinding
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.CommonActivity.callApi
 import com.example.smartgymapp.util.FirebaseUtil
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -130,7 +131,7 @@ class DoChatActivity : AppCompatActivity() {
                                 jsonObject.put("data", dataObject)
                                 jsonObject.put("to", otherUser.fcmToken)
 
-                                Log.d("Notification JSON", jsonObject.toString()) // Log JSON structure
+                                Log.d("Notification JSON", jsonObject.toString())
 
                                 // Make API call to FCM
                                 lifecycleScope.launchSafe {
@@ -151,21 +152,6 @@ class DoChatActivity : AppCompatActivity() {
     }
 
 
-
-    fun callApi(jsonObject: JSONObject) {
-        val json = "application/json; charset=utf-8".toMediaType()
-        val client = OkHttpClient()
-        val url = "https://fcm.googleapis.com/fcm/send"
-        val body = RequestBody.create(json, jsonObject.toString())
-        val request = Request.Builder()
-            .url(url)
-            .post(body)
-            .header("Authorization", "Bearer AAAA9ko5xrQ:APA91bGj2TeIUwq4v9jloJ2sOxwBBfIdI-WWduF7lWBxnYvrf7dsuZXcDBdXt1nGHwGeIBq9yGDk4hnIHZEa0q78KGGnxi6qQv7IpwovRR6PyUDSAcMYFdxrF1S-uqwqUiDfapHZQzj7") // Replace with your server key
-            .build()
-        val response = client.newCall(request).execute()
-        val responseBody = response.body?.string()
-        Log.d("FCM Response", responseBody ?: "Empty response")
-    }
 
 
 

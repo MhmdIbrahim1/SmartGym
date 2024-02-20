@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.trainer
+package com.example.smartgymapp.ui.trainer.tChat
 
 import android.os.Bundle
 import android.util.Log
@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,10 +13,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartgymapp.databinding.FragmentTrainerChatBinding
 import com.example.smartgymapp.mvvm.launchSafe
-import com.example.smartgymapp.ui.trainee.chat.ChatViewModel
 import com.example.smartgymapp.ui.trainee.chat.TraineeChatAdapter
 import com.example.smartgymapp.util.CommonActivity
-import com.example.smartgymapp.util.Coroutines.main
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -64,7 +61,13 @@ class TrainerChatFragment : Fragment() {
                         is CommonActivity.NetworkResult.Success ->{
                             hideProgressBar()
                             traineeChatAdapter.differ.submitList(result.data)
+                            if (result.data.isNullOrEmpty()) {
+                                showNoTrainee()
+                            } else {
+                                hideNoTrainee()
+                            }
                             Log.d("ChatFragment", "observeGetTrainee: ${result.data}")
+
                         }
 
                         is CommonActivity.NetworkResult.Error -> {
@@ -87,5 +90,14 @@ class TrainerChatFragment : Fragment() {
         binding.progressBar.visibility = View.GONE
     }
 
+    private fun showNoTrainee() {
+        binding.noTraineesTv.visibility = View.VISIBLE
+        binding.traineeChatRv.visibility = View.GONE
+    }
+
+    private fun hideNoTrainee() {
+        binding.noTraineesTv.visibility = View.GONE
+        binding.traineeChatRv.visibility = View.VISIBLE
+    }
 
 }

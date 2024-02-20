@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/trainerChatFragment"
-        android:name="com.example.smartgymapp.ui.trainer.TrainerChatFragment"
+        android:name="com.example.smartgymapp.ui.trainer.tChat.TrainerChatFragment"
         android:label="fragment_trainer_chat"
         tools:layout="@layout/fragment_trainer_chat" />
     <fragment
         android:id="@+id/trainerMainFragment"
-        android:name="com.example.smartgymapp.ui.trainer.TrainerMainFragment"
+        android:name="com.example.smartgymapp.ui.trainer.tMain.TrainerMainFragment"
         android:label="fragment_trainer_main"
         tools:layout="@layout/fragment_trainer_main" />
     <fragment
         android:id="@+id/trainerProfileFragment"
-        android:name="com.example.smartgymapp.ui.trainer.TrainerProfileFragment"
+        android:name="com.example.smartgymapp.ui.trainer.tProfile.TrainerProfileFragment"
         android:label="fragment_trainer_profile"
         tools:layout="@layout/fragment_trainer_profile" />
 </navigation>

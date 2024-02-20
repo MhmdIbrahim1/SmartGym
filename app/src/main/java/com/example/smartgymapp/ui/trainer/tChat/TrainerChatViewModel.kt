@@ -1,10 +1,9 @@
-package com.example.smartgymapp.ui.trainee.chat
+package com.example.smartgymapp.ui.trainer.tChat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.CommonActivity
-import com.example.smartgymapp.util.Coroutines.main
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,76 +17,74 @@ import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(
+class TrainerChatViewModel @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : ViewModel() {
 
-    private val _getTrainersFromUserCollection =
+    private val _getTraineesFromUsersCollection =
         MutableStateFlow<CommonActivity.NetworkResult<List<UserModel>>>(CommonActivity.NetworkResult.UnSpecified())
-    val getTrainersFromUserCollection = _getTrainersFromUserCollection.asStateFlow()
-
-    private val _getTrainersAndDoctorsIds =
-        MutableStateFlow<CommonActivity.NetworkResult<List<String>>>(CommonActivity.NetworkResult.UnSpecified())
-    val getTrainersAndDoctorsIds = _getTrainersAndDoctorsIds.asStateFlow()
+    val getTraineesFromUsersCollection = _getTraineesFromUsersCollection.asStateFlow()
 
     init {
         getUsersFromUserBookedIdsAcceptedRealTime()
-      //  getUsersFromUserBookedIdsAccepted()
-        // getTrainersFromUserCollection()
+        //getTraineesFromTraineeCollection()
     }
 
-    //    private fun getTrainersFromUserCollection() {
-//        viewModelScope.launch {
-//            _getTrainersFromUserCollection.emit(CommonActivity.NetworkResult.Loading())
-//
-//            val trainersCollectionRef = firestore.collection("users")
-//                .document(firebaseAuth.currentUser!!.uid)
-//                .collection("BookedChat")
-//
-//            try {
-//                val snapshotListener = trainersCollectionRef.addSnapshotListener { snapshot, exception ->
-//                    if (exception != null) {
-//                       viewModelScope.launch {
-//                            _getTrainersFromUserCollection.emit(
-//                                CommonActivity.NetworkResult.Error(exception.message ?: "Unknown Error")
-//                            )
-//                       }
-//                        return@addSnapshotListener
-//                    }
-//
-//                    if (snapshot != null) {
-//                        viewModelScope.launch(Dispatchers.IO) { // Offload mapping to IO dispatcher
-//                            val userModels = snapshot.documents.mapNotNull { document ->
-//                                document.toObject(UserModel::class.java)
-//                            }
-//
-//                            _getTrainersFromUserCollection.emit(
-//                                if (userModels.isNotEmpty()) {
-//                                    CommonActivity.NetworkResult.Success(userModels)
-//                                } else {
-//                                    CommonActivity.NetworkResult.Error("No trainers found")
-//                                }
-//                            )
-//                        }
-//                    }
-//                }
-//
-//                _getTrainersFromUserCollection.onCompletion { snapshotListener.remove() }
-//
-//            } catch (e: CancellationException) {
-//                throw e
-//            } catch (e: Exception) {
-//                _getTrainersFromUserCollection.emit(
-//                    CommonActivity.NetworkResult.Error(e.message ?: "Unknown Error" )
-//                )
-//            }
-//        }
-//    }
-//
+    private fun getTraineesFromTraineeCollection() {
+        viewModelScope.launch {
+            _getTraineesFromUsersCollection.emit(CommonActivity.NetworkResult.Loading())
+
+            val traineesCollectionRef = firestore.collection("users")
+                .document(firebaseAuth.currentUser!!.uid)
+                .collection("BookedChat")
+
+            try {
+                val snapshotListener =
+                    traineesCollectionRef.addSnapshotListener { snapshot, exception ->
+                        if (exception != null) {
+                            viewModelScope.launch {
+                                _getTraineesFromUsersCollection.emit(
+                                    CommonActivity.NetworkResult.Error(
+                                        exception.message ?: "Unknown Error"
+                                    )
+                                )
+                            }
+                            return@addSnapshotListener
+                        }
+
+                        if (snapshot != null) {
+                            viewModelScope.launch(Dispatchers.IO) { // Offload mapping to IO dispatcher
+                                val userModels = snapshot.documents.mapNotNull { document ->
+                                    document.toObject(UserModel::class.java)
+                                }
+
+                                _getTraineesFromUsersCollection.emit(
+                                    if (userModels.isNotEmpty()) {
+                                        CommonActivity.NetworkResult.Success(userModels)
+                                    } else {
+                                        CommonActivity.NetworkResult.Error("No trainees found")
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                _getTraineesFromUsersCollection.onCompletion { snapshotListener.remove() }
+
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _getTraineesFromUsersCollection.emit(
+                    CommonActivity.NetworkResult.Error(e.message ?: "Unknown Error")
+                )
+            }
+        }
+    }
+
     private fun getUsersFromUserBookedIdsAcceptedRealTime() {
         viewModelScope.launch {
-            _getTrainersFromUserCollection.emit(CommonActivity.NetworkResult.Loading())
+            _getTraineesFromUsersCollection.emit(CommonActivity.NetworkResult.Loading())
 
             try {
                 val userRef = firestore.collection("users").document(firebaseAuth.currentUser!!.uid)
@@ -99,7 +96,7 @@ class ChatViewModel @Inject constructor(
                 firestore.collection("users").addSnapshotListener() { snapshot, exception ->
                     if (exception != null) {
                         viewModelScope.launch {
-                            _getTrainersFromUserCollection.emit(
+                            _getTraineesFromUsersCollection.emit(
                                 CommonActivity.NetworkResult.Error(
                                     exception.message ?: "Unknown Error"
                                 )
@@ -118,7 +115,7 @@ class ChatViewModel @Inject constructor(
                                 userBookedIdsAccepted?.contains(userModel.userId) == true
                             }
 
-                            _getTrainersFromUserCollection.emit(
+                            _getTraineesFromUsersCollection.emit(
                                 if (trainees.isNotEmpty()) {
                                     CommonActivity.NetworkResult.Success(trainees)
                                 } else {
@@ -131,7 +128,7 @@ class ChatViewModel @Inject constructor(
 
 
             } catch (e: Exception) {
-                _getTrainersFromUserCollection.emit(
+                _getTraineesFromUsersCollection.emit(
                     CommonActivity.NetworkResult.Error(
                         e.message ?: "Unknown Error"
                     )
@@ -141,6 +138,4 @@ class ChatViewModel @Inject constructor(
     }
 
 
-
 }
-

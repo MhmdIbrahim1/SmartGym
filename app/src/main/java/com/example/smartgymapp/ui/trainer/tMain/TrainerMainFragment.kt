@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.trainer
+package com.example.smartgymapp.ui.trainer.tMain
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,10 +10,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smartgymapp.databinding.FragmentMainBinding
 import com.example.smartgymapp.databinding.FragmentTrainerMainBinding
 import com.example.smartgymapp.mvvm.launchSafe
-import com.example.smartgymapp.ui.trainee.chat.TraineeChatAdapter
 import com.example.smartgymapp.util.CommonActivity
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint

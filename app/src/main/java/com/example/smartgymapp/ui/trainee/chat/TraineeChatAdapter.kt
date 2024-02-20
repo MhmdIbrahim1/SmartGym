@@ -35,12 +35,16 @@ class TraineeChatAdapter : RecyclerView.Adapter<TraineeChatAdapter.TraineeChatVi
                     }
                 }
 
-                if (userModel.userType == "Doctor") {
-                    userTypeTv.text = root.context.getString(R.string.doctor)
-                } else if (userModel.userType == "Trainer"){
-                    userTypeTv.text = root.context.getString(R.string.trainer)
-                } else {
-                    userTypeTv.text = root.context.getString(R.string.trainee)
+                when (userModel.userType) {
+                    "Doctor" -> {
+                        userTypeTv.text = root.context.getString(R.string.doctor)
+                    }
+                    "Trainer" -> {
+                        userTypeTv.text = root.context.getString(R.string.trainer)
+                    }
+                    else -> {
+                        userTypeTv.text = root.context.getString(R.string.trainee)
+                    }
                 }
             }
         }
@@ -48,7 +52,7 @@ class TraineeChatAdapter : RecyclerView.Adapter<TraineeChatAdapter.TraineeChatVi
 
     private val diffUtil = object : DiffUtil.ItemCallback<UserModel>() {
         override fun areItemsTheSame(oldItem: UserModel, newItem: UserModel): Boolean {
-            return oldItem == newItem
+            return oldItem.userId == newItem.userId
         }
 
         override fun areContentsTheSame(oldItem: UserModel, newItem: UserModel): Boolean {

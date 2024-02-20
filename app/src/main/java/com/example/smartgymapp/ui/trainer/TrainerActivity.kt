@@ -1,7 +1,5 @@
 package com.example.smartgymapp.ui.trainer
 
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -13,11 +11,14 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -27,19 +28,23 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityTrainerBinding
+import com.example.smartgymapp.mvvm.launchSafe
+import com.example.smartgymapp.ui.trainer.tMain.MainTrainerViewModel
+import com.example.smartgymapp.util.CommonActivity
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
 import com.example.smartgymapp.util.CommonActivity.isLtr
-import com.example.smartgymapp.util.FirebaseUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class TrainerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrainerBinding
     private lateinit var navController: NavController
+    private val viewModel by viewModels<MainTrainerViewModel>()
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -91,6 +96,7 @@ class TrainerActivity : AppCompatActivity() {
         binding = ActivityTrainerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         getNFCToken()
+        observeBookingNumber()
 
         if (Build.VERSION.SDK_INT >= 33) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
@@ -236,16 +242,24 @@ class TrainerActivity : AppCompatActivity() {
         }
     }
 
-    // Call this function where you need to request notification permission
-    private fun checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager =
-                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val notificationChannel =
-                notificationManager.getNotificationChannel(NotificationManager.IMPORTANCE_DEFAULT.toString())
-            if (notificationChannel != null && notificationChannel.importance == NotificationManager.IMPORTANCE_NONE) {
-                // If the notification channel importance is none, request notification permission
-                requestNotificationPermission()
+    private fun observeBookingNumber() {
+        lifecycleScope.launchSafe {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getAllTraineesRequest.collectLatest {
+                    when (it) {
+                        is CommonActivity.NetworkResult.Success -> {
+                            val count = it.data?.size ?: 0
+                            val bottomNavigation = binding.trainerNavView
+                            bottomNavigation.getOrCreateBadge(R.id.trainerMainFragment).apply{
+                                number = count
+                                backgroundColor = resources.getColor(R.color.colorPrimaryRed, null)
+                                badgeTextColor = resources.getColor(R.color.white, null)
+                            }
+                        }
+
+                        else -> {}
+                    }
+                }
             }
         }
     }

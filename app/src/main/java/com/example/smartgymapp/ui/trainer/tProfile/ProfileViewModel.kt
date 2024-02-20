@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.trainer
+package com.example.smartgymapp.ui.trainer.tProfile
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -22,6 +22,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.example.smartgymapp.SmartGymApp
+import kotlinx.coroutines.Dispatchers
 
 @Suppress("DEPRECATION")
 @HiltViewModel
@@ -39,6 +40,11 @@ class ProfileViewModel @Inject constructor(
     private val _updateInfo =
         MutableStateFlow<CommonActivity.NetworkResult<UserModel>>(CommonActivity.NetworkResult.UnSpecified())
     val updateInfo = _updateInfo.asStateFlow()
+
+    private val _getTraineesFromUsersCollection =
+        MutableStateFlow<CommonActivity.NetworkResult<List<UserModel>>>(CommonActivity.NetworkResult.UnSpecified())
+    val getTraineesFromUsersCollection = _getTraineesFromUsersCollection.asStateFlow()
+
 
     init {
         getUser()
@@ -162,6 +168,61 @@ class ProfileViewModel @Inject constructor(
             } catch (e: Exception) {
                 // Handle exception if needed
                 _updateInfo.emit(CommonActivity.NetworkResult.Error(e.message.toString()))
+            }
+        }
+    }
+
+    private fun getUsersFromUserBookedIdsAcceptedRealTime() {
+        viewModelScope.launch {
+            _getTraineesFromUsersCollection.emit(CommonActivity.NetworkResult.Loading())
+
+            try {
+                val userRef = firestore.collection("users").document(auth.currentUser!!.uid)
+                // get the userBookedIdsAccepted list from the user collection
+                val userBookedIdsAccepted =
+                    userRef.get().await().toObject(UserModel::class.java)?.userBookedIdsAccepted
+
+                // get all the users from the ids in the userBookedIdsAccepted list
+                firestore.collection("users").addSnapshotListener() { snapshot, exception ->
+                    if (exception != null) {
+                        viewModelScope.launch {
+                            _getTraineesFromUsersCollection.emit(
+                                CommonActivity.NetworkResult.Error(
+                                    exception.message ?: "Unknown Error"
+                                )
+                            )
+                        }
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null) {
+                        viewModelScope.launch(Dispatchers.IO) { // Offload mapping to IO dispatcher
+                            val userModels = snapshot.documents.mapNotNull { document ->
+                                document.toObject(UserModel::class.java)
+                            }
+
+                            val trainees = userModels.filter { userModel ->
+                                userBookedIdsAccepted?.contains(userModel.userId) == true
+                            }
+
+                            _getTraineesFromUsersCollection.emit(
+                                if (trainees.isNotEmpty()) {
+                                    CommonActivity.NetworkResult.Success(trainees)
+                                } else {
+                                    CommonActivity.NetworkResult.Error("No trainees found")
+                                }
+                            )
+                        }
+                    }
+                }
+
+
+            } catch (e: Exception) {
+                _getTraineesFromUsersCollection.emit(
+                    CommonActivity.NetworkResult.Error(
+                        e.message ?: "Unknown Error"
+                    )
+                )
             }
         }
     }

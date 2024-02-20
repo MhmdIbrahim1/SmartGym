@@ -1,4 +1,4 @@
-    package com.example.smartgymapp.ui.trainer
+    package com.example.smartgymapp.ui.trainer.tProfile
 
     import android.content.Intent
     import android.net.Uri
@@ -24,10 +24,8 @@
     import com.example.smartgymapp.model.UserModel
     import com.example.smartgymapp.ui.login.LoginActivity
     import com.example.smartgymapp.util.CommonActivity
-    import com.example.smartgymapp.util.UiHelper.navigate
     import com.google.firebase.auth.FirebaseAuth
     import com.google.firebase.firestore.FirebaseFirestore
-    import com.google.firebase.ktx.Firebase
     import com.google.firebase.messaging.FirebaseMessaging
     import dagger.hilt.android.AndroidEntryPoint
     import kotlinx.coroutines.Job

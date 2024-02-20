@@ -10,10 +10,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.FragmentDoctorMainBinding
 import com.example.smartgymapp.mvvm.launchSafe
-import com.example.smartgymapp.ui.trainer.MainTraineeRequestsAdapter
+import com.example.smartgymapp.ui.trainer.tMain.MainTraineeRequestsAdapter
 import com.example.smartgymapp.util.CommonActivity
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint

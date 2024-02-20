@@ -12,13 +12,23 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.FragmentDoctorsBinding
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.CommonActivity.callApi
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import org.json.JSONObject
 
 @AndroidEntryPoint
 class DoctorsFragment : Fragment() {
@@ -50,6 +60,7 @@ class DoctorsFragment : Fragment() {
             )
         }
     }
+
 
     private fun observeBookingStatus() {
         doctorsViewModel.sendTraineeToTrainerRequests.observe(viewLifecycleOwner) { result ->

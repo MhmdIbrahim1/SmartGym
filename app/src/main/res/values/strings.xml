@@ -40,5 +40,7 @@
     <string name="log_out">Log out</string>
     <string name="no_trainee_requests">No Trainee Requests</string>
     <string name="_12_00">12:00</string>
+    <string name="no_patients_yet_to_chat_with">No patients yet to chat with</string>
+    <string name="no_trainees_yet_to_chat_with">No trainees yet to chat with</string>
 
 </resources>

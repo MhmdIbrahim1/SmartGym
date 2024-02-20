@@ -14,10 +14,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContentProviderCompat
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -27,6 +31,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityDoctorBinding
+import com.example.smartgymapp.mvvm.launchSafe
+import com.example.smartgymapp.util.CommonActivity
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
 import com.example.smartgymapp.util.CommonActivity.showToast
 import com.example.smartgymapp.util.FirebaseUtil
@@ -35,11 +41,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class DoctorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDoctorBinding
     private lateinit var navController: NavController
+    private val mainVewModel by viewModels<MainDoctorViewModel>()
+    private val chatVewModel by viewModels<DoctorChatViewModel>()
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -58,7 +67,10 @@ class DoctorActivity : AppCompatActivity() {
         }
 
     private fun showSettingDialog() {
-        MaterialAlertDialogBuilder(this, com.google.android.material.R.style.MaterialAlertDialog_Material3)
+        MaterialAlertDialogBuilder(
+            this,
+            com.google.android.material.R.style.MaterialAlertDialog_Material3
+        )
             .setTitle("Notification Permission")
             .setMessage("Notification permission is required, Please allow notification permission from setting")
             .setPositiveButton("Ok") { _, _ ->
@@ -72,7 +84,10 @@ class DoctorActivity : AppCompatActivity() {
 
     private fun showNotificationPermissionRationale() {
 
-        MaterialAlertDialogBuilder(this, com.google.android.material.R.style.MaterialAlertDialog_Material3)
+        MaterialAlertDialogBuilder(
+            this,
+            com.google.android.material.R.style.MaterialAlertDialog_Material3
+        )
             .setTitle("Alert")
             .setMessage("Notification permission is required, to show notification")
             .setPositiveButton("Ok") { _, _ ->
@@ -91,6 +106,7 @@ class DoctorActivity : AppCompatActivity() {
         binding = ActivityDoctorBinding.inflate(layoutInflater)
         setContentView(binding.root)
         getNFCToken()
+        observeBookingNumber()
 
         if (Build.VERSION.SDK_INT >= 33) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
@@ -119,8 +135,6 @@ class DoctorActivity : AppCompatActivity() {
                 )
             }
         }
-
-
     }
 
 
@@ -165,37 +179,26 @@ class DoctorActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create a dialog to prompt the user to grant notification permission
-            AlertDialog.Builder(this)
-                .setTitle("Notification Permission Required")
-                .setMessage("Please grant permission to receive notifications.")
-                .setPositiveButton("Allow") { dialog, _ ->
-                    // Handle allow button click
-                    // You can proceed with enabling notifications here
-                    dialog.dismiss()
-                }
-                .setNegativeButton("Deny") { dialog, _ ->
-                    // Handle deny button click
-                    // You can show a message or take any other action here
-                    dialog.dismiss()
-                }
-                .setCancelable(false) // Prevent dismissing dialog by clicking outside of it
-                .show()
-        }
-    }
+    private fun observeBookingNumber() {
+        lifecycleScope.launchSafe {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainVewModel.getAllTraineesRequest.collectLatest {
+                    when (it) {
+                        is CommonActivity.NetworkResult.Success -> {
+                            val count = it.data?.size ?: 0
+                            val bottomNavigation = binding.navView
+                            bottomNavigation.getOrCreateBadge(R.id.doctorMainFragment).apply{
+                                number = count
+                                backgroundColor = resources.getColor(R.color.colorPrimaryRed, null)
+                                badgeTextColor = resources.getColor(R.color.white, null)
+                            }
 
-    // Call this function where you need to request notification permission
-    private fun checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager =
-                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val notificationChannel =
-                notificationManager.getNotificationChannel(NotificationManager.IMPORTANCE_DEFAULT.toString())
-            if (notificationChannel != null && notificationChannel.importance == NotificationManager.IMPORTANCE_NONE) {
-                // If the notification channel importance is none, request notification permission
-                requestNotificationPermission()
+
+                        }
+
+                        else -> {}
+                    }
+                }
             }
         }
     }
