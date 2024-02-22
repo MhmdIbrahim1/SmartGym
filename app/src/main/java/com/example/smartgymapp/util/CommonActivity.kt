@@ -328,6 +328,25 @@ object CommonActivity {
         return color
     }
 
+
+    fun getCurrentLocale(context: Context): String {
+        val res = context.resources
+        val conf = res.configuration
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            conf?.locales?.get(0)?.toString() ?: "en"
+        } else {
+            @Suppress("DEPRECATION")
+            conf?.locale?.toString() ?: "en"
+        }
+    }
+
+
+    val appLanguages = arrayListOf(
+        /* begin language list */
+        Triple("", "العربية", "ar"),
+        Triple("", "English", "en")
+    ).sortedBy { it.second.lowercase() }
+
 }
 
 

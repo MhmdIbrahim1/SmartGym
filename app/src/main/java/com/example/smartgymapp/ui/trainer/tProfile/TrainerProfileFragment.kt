@@ -146,7 +146,7 @@ class TrainerProfileFragment : Fragment() {
         blockUserInputForUpdate()
         // Set click listener for Edit/Update button
         binding.btnEdit.setOnClickListener {
-            if (binding.btnEdit.text == "Edit") {
+            if (binding.btnEdit.text == "Edit" || binding.btnEdit.text == "تعديل") {
                 unblockUserInput()
                 binding.btnCancel.visibility = View.VISIBLE
                 binding.btnEdit.text = resources.getString(R.string.update)

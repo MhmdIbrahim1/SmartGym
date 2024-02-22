@@ -212,27 +212,6 @@ class TrainerActivity : AppCompatActivity() {
             }
         }
     }
-    private fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create a dialog to prompt the user to grant notification permission
-            AlertDialog.Builder(this)
-                .setTitle("Notification Permission Required")
-                .setMessage("Please grant permission to receive notifications.")
-                .setPositiveButton("Allow") { dialog, _ ->
-                    // Handle allow button click
-                    // You can proceed with enabling notifications here
-                    dialog.dismiss()
-                }
-                .setNegativeButton("Deny") { dialog, _ ->
-                    // Handle deny button click
-                    // You can show a message or take any other action here
-                    dialog.dismiss()
-                }
-                .setCancelable(false) // Prevent dismissing dialog by clicking outside of it
-                .show()
-        }
-    }
-
     private fun observeBookingNumber() {
         lifecycleScope.launchSafe {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

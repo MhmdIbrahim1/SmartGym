@@ -25,7 +25,10 @@ import com.example.smartgymapp.mvvm.logError
 import com.example.smartgymapp.ui.login.LoginActivity
 import com.example.smartgymapp.ui.trainer.tProfile.ProfileViewModel
 import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.CommonActivity.appLanguages
+import com.example.smartgymapp.util.CommonActivity.getCurrentLocale
 import com.example.smartgymapp.util.CommonActivity.setSubArrowImageBasedOnLayoutDirection
+import com.example.smartgymapp.util.CommonActivity.showToast
 import com.example.smartgymapp.util.MyPreference
 import com.example.smartgymapp.util.SingeSelectionHelper.showDialog
 import com.example.smartgymapp.util.SubtitleHelper
@@ -39,23 +42,6 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 
-fun getCurrentLocale(context: Context): String {
-    val res = context.resources
-    val conf = res.configuration
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        conf?.locales?.get(0)?.toString() ?: "en"
-    } else {
-        @Suppress("DEPRECATION")
-        conf?.locale?.toString() ?: "en"
-    }
-}
-
-
-val appLanguages = arrayListOf(
-    /* begin language list */
-    Triple("", "العربية", "ar"),
-    Triple("", "English", "en")
-).sortedBy { it.second.lowercase() }
 
 @AndroidEntryPoint
 class TraineeProfileFragment : Fragment() {
@@ -217,7 +203,7 @@ class TraineeProfileFragment : Fragment() {
             startActivity(intent)
         } else {
             // Handle the case where the intent cannot be resolved
-            Toast.makeText(requireContext(), "Notification settings not available", Toast.LENGTH_SHORT).show()
+            showToast(requireActivity(), "Notification settings are not available right now. Please try again later.")
         }
     }
 
