@@ -11,6 +11,7 @@ import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
@@ -30,6 +31,7 @@ import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.ui.doctor.dChat.DoctorChatViewModel
 import com.example.smartgymapp.ui.doctor.dMain.MainDoctorViewModel
 import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.CommonActivity.colorFromAttribute
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
 import com.example.smartgymapp.util.MyContextWrapper
 import com.example.smartgymapp.util.MyPreference
@@ -45,7 +47,6 @@ class DoctorActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDoctorBinding
     private lateinit var navController: NavController
     private val mainVewModel by viewModels<MainDoctorViewModel>()
-    private val chatVewModel by viewModels<DoctorChatViewModel>()
 
     private lateinit var myPreference: MyPreference
 
@@ -133,6 +134,21 @@ class DoctorActivity : AppCompatActivity() {
                 )
             }
         }
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    window?.navigationBarColor = colorFromAttribute(R.attr.primaryGrayBackground)
+
+                    // If we don't disable we end up in a loop with default behavior calling
+                    // this callback as well, so we disable it, run default behavior,
+                    // then re-enable this callback so it can be used for next back press.
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        )
     }
 
 
@@ -148,7 +164,7 @@ class DoctorActivity : AppCompatActivity() {
         if (item.order and Menu.CATEGORY_SECONDARY == 0) {
             builder.setPopUpTo(
                 navController.graph.findStartDestination().id,
-                inclusive = false,
+                inclusive = true,
                 saveState = true
             )
         }
@@ -190,8 +206,6 @@ class DoctorActivity : AppCompatActivity() {
                                 backgroundColor = resources.getColor(R.color.colorPrimaryRed, null)
                                 badgeTextColor = resources.getColor(R.color.white, null)
                             }
-
-
                         }
 
                         else -> {}

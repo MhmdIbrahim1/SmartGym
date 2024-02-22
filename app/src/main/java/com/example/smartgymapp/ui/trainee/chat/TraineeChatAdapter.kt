@@ -13,8 +13,6 @@ import com.example.smartgymapp.databinding.UsersInChatItemBinding
 import com.example.smartgymapp.ui.dochat.DoChatActivity
 import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.util.CommonActivity
-import com.example.smartgymapp.util.FirebaseUtil
-import com.google.firebase.auth.FirebaseAuth
 
 class TraineeChatAdapter : RecyclerView.Adapter<TraineeChatAdapter.TraineeChatViewHolder>() {
 
@@ -77,15 +75,9 @@ class TraineeChatAdapter : RecyclerView.Adapter<TraineeChatAdapter.TraineeChatVi
         holder.bind(trainer)
 
         holder.itemView.setOnClickListener {
-
-            val chatRoomId = FirebaseUtil().getCharRoomId(
-                FirebaseAuth.getInstance().currentUser!!.uid,
-                trainer.userId
-            )
             Intent(holder.itemView.context, DoChatActivity::class.java).also { intent ->
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 CommonActivity.passUserModelAsIntent(intent, trainer)
-                intent.putExtra("chatRoomId", chatRoomId) // Pass the chatRoomId
                 holder.itemView.context.startActivity(intent)
             }
 

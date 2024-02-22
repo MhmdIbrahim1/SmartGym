@@ -131,7 +131,6 @@ class TraineeActivity : AppCompatActivity() {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     window?.navigationBarColor = colorFromAttribute(R.attr.primaryGrayBackground)
-                    updateLocale()
 
                     // If we don't disable we end up in a loop with default behavior calling
                     // this callback as well, so we disable it, run default behavior,
@@ -143,12 +142,6 @@ class TraineeActivity : AppCompatActivity() {
             }
         )
     }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        updateLocale() // update locale on configuration change
-    }
-
 
     private fun NavDestination.matchDestination(@IdRes destId: Int): Boolean =
         hierarchy.any { it.id == destId }
@@ -162,7 +155,7 @@ class TraineeActivity : AppCompatActivity() {
         if (item.order and Menu.CATEGORY_SECONDARY == 0) {
             builder.setPopUpTo(
                 navController.graph.findStartDestination().id,
-                inclusive = false,
+                inclusive = true,
                 saveState = true
             )
         }

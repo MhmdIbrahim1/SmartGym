@@ -120,5 +120,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="write_a_message">Write a message</string>
+    <string name="no_patinets_requests">No Patients Requests</string>
 
 </resources>

@@ -21,7 +21,6 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
-    private val sharedPreferences: SharedPreferences
 ) : ViewModel(
 ) {
 
@@ -29,48 +28,16 @@ class LoginViewModel @Inject constructor(
         MutableSharedFlow<NetworkResult<String>>()
     val login = _login.asSharedFlow()
 
-    private val _navigateState = MutableStateFlow(0)
-    val navigateState = _navigateState.asStateFlow()
-
-
     companion object {
-        const val TRAINING_ACTIVITY = 23
-        const val TRAINER_ACTIVITY = 24
-        const val DOCTOR_ACTIVITY = 25
         const val USER_COLLECTION = "users"
         const val USER_TYPE_FIELD = "userType"
-        const val USER_LOGGED_IN_KEY = "USER_LOGGED_IN" // Add key for shared preferences
     }
-    init {
-        val userLoggedIn = sharedPreferences.getBoolean(USER_LOGGED_IN_KEY, false)
-        if (userLoggedIn && auth.currentUser != null) {
-            // User is logged in, emit navigation state accordingly
-            viewModelScope.launch {
-                val activityCode = getActivityForUserType(auth.currentUser!!)
-                _navigateState.emit(activityCode)
-                Log.d("LoginViewModel", "User already logged in. Navigating to activity code: $activityCode")
-            }
-        }
+    fun login(email: String, password: String) {
+        // Use the default user type for logging in
+        performLogin(email, password)
     }
 
-    private suspend fun getActivityForUserType(user: FirebaseUser): Int {
-        return when (getUserTypeFromFirestore(user.uid)) {
-            "Trainee" -> TRAINING_ACTIVITY
-            "Trainer" -> TRAINER_ACTIVITY
-            "Doctor" -> DOCTOR_ACTIVITY
-            else -> 0
-        }
-    }
-    private suspend fun getUserTypeFromFirestore(uid: String): String {
-        return try {
-            val snapshot = firestore.collection("users").document(uid).get().await()
-            snapshot.getString("userType") ?: "Unknown"
-        } catch (e: Exception) {
-            Log.e("LoginViewModel", "Error fetching user type: ${e.message}")
-            "Unknown"
-        }
-    }
-    fun login(email: String, password: String, userType: String) {
+    private fun performLogin(email: String, password: String) {
         Log.d("LoginViewModel", "Attempting login...")
         // Check for empty fields
         if (email.isEmpty() || password.isEmpty()) {
@@ -88,7 +55,7 @@ class LoginViewModel @Inject constructor(
             .addOnSuccessListener { authResult ->
                 val userUid = authResult.user?.uid
                 if (userUid != null) {
-                    checkUserType(userUid, userType)
+                    fetchUserType(userUid)
                 } else {
                     handleLoginFailure(Exception("User UID is null"))
                 }
@@ -98,22 +65,27 @@ class LoginViewModel @Inject constructor(
             }
     }
 
-
-    private fun checkUserType(uid: String, userType: String) {
+    private fun fetchUserType(uid: String) {
         firestore.collection(USER_COLLECTION).document(uid).get()
             .addOnSuccessListener { document ->
                 val userTypeFromDB = document.getString(USER_TYPE_FIELD)
-                    ?: throw Exception("User type not found in DB")
-                if (userTypeFromDB == userType) {
-                    handleLoginSuccess()
+                if (!userTypeFromDB.isNullOrBlank()) {
+                    handleLoginSuccess(userTypeFromDB)
                 } else {
-                    handleLoginFailure(Exception("User type mismatch"))
+                    handleLoginFailure(Exception("User type not found in DB"))
                 }
             }
             .addOnFailureListener {
                 handleLoginFailure(it)
             }
     }
+
+    private fun handleLoginSuccess(userType: String) {
+        viewModelScope.launch {
+            _login.emit(NetworkResult.Success(userType))
+        }
+    }
+
     private fun handleLoginFailure(exception: Exception) {
         val errorMessage = "Login Failed: ${exception.message}"
         viewModelScope.launch {
@@ -122,12 +94,4 @@ class LoginViewModel @Inject constructor(
         Log.e("LoginViewModel", errorMessage)
     }
 
-    private fun handleLoginSuccess() {
-        viewModelScope.launch {
-            _login.emit(NetworkResult.Success("Login Success"))
-            // Save user login state to SharedPreferences
-            sharedPreferences.edit().putBoolean(USER_LOGGED_IN_KEY, true).apply()
-            Log.d("LoginViewModel", "Login success. User login state saved.")
-        }
-    }
 }

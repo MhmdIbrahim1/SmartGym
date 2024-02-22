@@ -12,6 +12,8 @@
     <string name="allTrainers">المدربون</string>
     <string name="doctor">طبيب</string>
     <string name="trainers">تحدث مع مدربيك وأطبائك</string>
+    <string name="ahlan_mohamed">أهلا محمد</string>
+    <string name="ahlan">أهلا</string>
     <string name="home">الصفحة الرئيسية</string>
     <string name="chat">الدردشة</string>
     <string name="profile">الملف الشخصي</string>
@@ -66,6 +68,6 @@
     <string name="pending">قيد الانتظار</string>
     <string name="accepted">مقبول</string>
     <string name="write_a_message">اكتب رسالة</string>
-
+    <string name="no_patinets_requests">لا توجد طلبات مرضى</string>
 
 </resources>

@@ -103,56 +103,6 @@
 
     </LinearLayout>
 
-    <RadioGroup
-        android:id="@+id/whoWillLoginRadioGroup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toStartOf="@+id/v_2"
-        app:layout_constraintStart_toStartOf="@+id/v_1"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
-
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/userRadioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/gotham"
-            android:text="@string/user"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
-
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/trainerRadioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/gotham"
-            android:text="@string/trainer"
-            android:layout_weight="1"
-
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
-
-        <com.google.android.material.radiobutton.MaterialRadioButton
-            android:id="@+id/doctorRadioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/gotham"
-            android:layout_weight="1"
-            android:text="@string/doctor"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
-
-    </RadioGroup>
-
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loginBtn"
         style="@style/OrangeButton"

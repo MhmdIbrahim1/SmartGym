@@ -17,34 +17,36 @@
             android:background="@color/lightGrayBackground"
             >
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:fontFamily="@font/poppins_thin"
-                android:text="@string/chat_with_your_trainees"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/v_1"
-                app:layout_constraintTop_toTopOf="@+id/h_1" />
+                android:background="@color/colorPrimaryOrange"
+                android:padding="10dp"
+                android:id="@+id/toolbar"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/noTraineesTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/poppins_thin"
-                android:text="@string/no_trainees_yet_to_chat_with"
-                android:textColor="@color/colorPrimaryOrange"
-                android:textSize="16sp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/v_1"
-                app:layout_constraintTop_toTopOf="@+id/h_1" />
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/left_back_arrow_"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/white"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/back_btn"/>
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/patients"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/traineeChatRv"
                 android:layout_width="0dp"
@@ -52,7 +54,7 @@
                 android:layout_marginTop="12dp"
                 app:layout_constraintEnd_toStartOf="@+id/v_2"
                 app:layout_constraintStart_toStartOf="@+id/v_1"
-                app:layout_constraintTop_toBottomOf="@+id/textView2"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
                 tools:listitem="@layout/users_in_chat_item"
                 />
 
@@ -78,17 +80,15 @@
                 app:layout_constraintGuide_percent="0.02" />
 
             <ProgressBar
-                android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/progressBar"
+                android:visibility="gone"
                 android:indeterminateTint="@color/colorPrimaryOrange"
-                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.287" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

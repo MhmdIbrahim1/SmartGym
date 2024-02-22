@@ -32,7 +32,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/poppins_thin"
-            android:text="@string/no_trainee_requests"
+            android:text="@string/no_patinets_requests"
             android:textColor="@color/colorPrimaryOrange"
             android:textSize="24sp"
             android:visibility="gone"

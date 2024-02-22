@@ -91,7 +91,6 @@ class StartedScreen : AppCompatActivity(), CoroutineScope {
             "Unknown"
         }
     }
-
     private fun navigateToActivity(userType: String) {
 
         val intent = when (userType) {
