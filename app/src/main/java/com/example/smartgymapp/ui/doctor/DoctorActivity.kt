@@ -1,6 +1,5 @@
 package com.example.smartgymapp.ui.doctor
 
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -12,13 +11,9 @@ import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.IdRes
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,10 +27,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.ActivityDoctorBinding
 import com.example.smartgymapp.mvvm.launchSafe
+import com.example.smartgymapp.ui.doctor.dChat.DoctorChatViewModel
+import com.example.smartgymapp.ui.doctor.dMain.MainDoctorViewModel
 import com.example.smartgymapp.util.CommonActivity
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
-import com.example.smartgymapp.util.CommonActivity.showToast
-import com.example.smartgymapp.util.FirebaseUtil
+import com.example.smartgymapp.util.MyContextWrapper
+import com.example.smartgymapp.util.MyPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -49,6 +46,8 @@ class DoctorActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private val mainVewModel by viewModels<MainDoctorViewModel>()
     private val chatVewModel by viewModels<DoctorChatViewModel>()
+
+    private lateinit var myPreference: MyPreference
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -102,7 +101,6 @@ class DoctorActivity : AppCompatActivity() {
     private var hasNotificationPermissionGranted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityDoctorBinding.inflate(layoutInflater)
         setContentView(binding.root)
         getNFCToken()
@@ -116,7 +114,7 @@ class DoctorActivity : AppCompatActivity() {
 
 
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.doctor_fragment_container_view) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
         navController = navHostFragment.navController
         binding.navView.setOnItemSelectedListener { item ->
             onNavDestinationSelected(item, navController)
@@ -201,6 +199,12 @@ class DoctorActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        myPreference = MyPreference(newBase!!)
+        val lang = myPreference.getLanguage()
+        super.attachBaseContext(MyContextWrapper.wrap(newBase,lang))
     }
 
 }

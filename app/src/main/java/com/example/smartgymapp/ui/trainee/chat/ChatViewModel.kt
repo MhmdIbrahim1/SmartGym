@@ -31,6 +31,9 @@ class ChatViewModel @Inject constructor(
         MutableStateFlow<CommonActivity.NetworkResult<List<String>>>(CommonActivity.NetworkResult.UnSpecified())
     val getTrainersAndDoctorsIds = _getTrainersAndDoctorsIds.asStateFlow()
 
+    private val _getTrainersFromBookedList =
+        MutableStateFlow<CommonActivity.NetworkResult<List<UserModel>>>(CommonActivity.NetworkResult.UnSpecified())
+    val getTrainersFromBookedList = _getTrainersFromBookedList.asStateFlow()
     init {
         getUsersFromUserBookedIdsAcceptedRealTime()
       //  getUsersFromUserBookedIdsAccepted()
@@ -140,7 +143,62 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+     fun getTrainersFromBookedAccepted(userType: String) {
+        viewModelScope.launch {
+            _getTrainersFromBookedList.emit(CommonActivity.NetworkResult.Loading())
 
+            try {
+                val userRef = firestore.collection("users").document(firebaseAuth.currentUser!!.uid)
+                // get the userBookedIdsAccepted list from the user collection
+                val userBookedIdsAccepted =
+                    userRef.get().await().toObject(UserModel::class.java)?.userBookedIdsAccepted
+
+                // get all the users from the ids in the userBookedIdsAccepted list
+                firestore.collection("users")
+                    .whereEqualTo("userType", userType)
+                    .addSnapshotListener() { snapshot, exception ->
+                    if (exception != null) {
+                        viewModelScope.launch {
+                            _getTrainersFromBookedList.emit(
+                                CommonActivity.NetworkResult.Error(
+                                    exception.message ?: "Unknown Error"
+                                )
+                            )
+                        }
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null) {
+                        viewModelScope.launch(Dispatchers.IO) { // Offload mapping to IO dispatcher
+                            val userModels = snapshot.documents.mapNotNull { document ->
+                                document.toObject(UserModel::class.java)
+                            }
+
+                            val trainees = userModels.filter { userModel ->
+                                userBookedIdsAccepted?.contains(userModel.userId) == true
+                            }
+
+                            _getTrainersFromBookedList.emit(
+                                if (trainees.isNotEmpty()) {
+                                    CommonActivity.NetworkResult.Success(trainees)
+                                } else {
+                                    CommonActivity.NetworkResult.Error("No trainees found")
+                                }
+                            )
+                        }
+                    }
+                }
+
+
+            } catch (e: Exception) {
+                _getTrainersFromBookedList.emit(
+                    CommonActivity.NetworkResult.Error(
+                        e.message ?: "Unknown Error"
+                    )
+                )
+            }
+        }
+    }
 
 }
 

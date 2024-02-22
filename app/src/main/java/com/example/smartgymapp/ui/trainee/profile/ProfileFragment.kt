@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.trainee
+package com.example.smartgymapp.ui.trainee.profile
 
 import android.content.Intent
 import android.net.Uri
@@ -78,14 +78,13 @@ class ProfileFragment : Fragment() {
         observeGetTrainerUser()
         observeUpdateUser()
 
+        binding.backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
         binding.imageEdit.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             imageActivityResultLauncher.launch(intent)
-        }
-
-        binding.tvLogout.setOnClickListener {
-            showLogoutConfirmationDialog()
         }
     }
     private fun observeGetTrainerUser() {
@@ -149,7 +148,7 @@ class ProfileFragment : Fragment() {
         blockUserInputForUpdate()
         // Set click listener for Edit/Update button
         binding.btnEdit.setOnClickListener {
-            if (binding.btnEdit.text == "Edit") {
+            if (binding.btnEdit.text == "Edit" || binding.btnEdit.text == "تعديل") {
                 unblockUserInput()
                 binding.btnCancel.visibility = View.VISIBLE
                 binding.btnEdit.text = resources.getString(R.string.update)
@@ -244,21 +243,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun showLogoutConfirmationDialog() {
-        val builder = AlertDialog.Builder(requireActivity())
-        builder.setTitle("Logout")
-        builder.setMessage("Are you sure you want to logout?")
-        builder.setPositiveButton("Yes") { _, _ ->
-            FirebaseMessaging.getInstance().deleteToken()
-            FirebaseAuth.getInstance().signOut()
-            Intent(requireActivity(), LoginActivity::class.java).also {
-                it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(it)
-            }
-        }
-        builder.setNegativeButton("No") { _, _ -> }
-        builder.show()
-    }
+
     private fun getNFCToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             if (it.isSuccessful) {
@@ -274,6 +259,14 @@ class ProfileFragment : Fragment() {
                     }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // hide the bottom navigation bar
+        val bottomNav = requireActivity().findViewById<View>(R.id.nav_view)
+        bottomNav.visibility = View.GONE
     }
     override fun onDestroyView() {
         super.onDestroyView()

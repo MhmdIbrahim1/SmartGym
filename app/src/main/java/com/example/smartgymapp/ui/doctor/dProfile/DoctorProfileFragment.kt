@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.doctor
+package com.example.smartgymapp.ui.doctor.dProfile
 
 import android.content.Intent
 import android.net.Uri
@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -22,7 +21,6 @@ import com.bumptech.glide.Glide
 import com.example.smartgymapp.R
 import com.example.smartgymapp.databinding.FragmentTrainerProfileBinding
 import com.example.smartgymapp.model.UserModel
-import com.example.smartgymapp.ui.login.LoginActivity
 import com.example.smartgymapp.ui.trainer.tProfile.ProfileViewModel
 import com.example.smartgymapp.util.CommonActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -77,15 +75,15 @@ class DoctorProfileFragment : Fragment() {
         observeGetTrainerUser()
         observeUpdateUser()
 
+        binding.backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
         binding.imageEdit.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             imageActivityResultLauncher.launch(intent)
         }
 
-        binding.tvLogout.setOnClickListener {
-            showLogoutConfirmationDialog()
-        }
     }
 
     private fun observeGetTrainerUser() {
@@ -149,7 +147,7 @@ class DoctorProfileFragment : Fragment() {
         blockUserInputForUpdate()
         // Set click listener for Edit/Update button
         binding.btnEdit.setOnClickListener {
-            if (binding.btnEdit.text == "Edit") {
+            if (binding.btnEdit.text == "Edit" || binding.btnEdit.text == "تعديل") {
                 unblockUserInput()
                 binding.btnCancel.visibility = View.VISIBLE
                 binding.btnEdit.text = resources.getString(R.string.update)
@@ -245,22 +243,6 @@ class DoctorProfileFragment : Fragment() {
         }
     }
 
-    private fun showLogoutConfirmationDialog() {
-        val builder = AlertDialog.Builder(requireActivity())
-        builder.setTitle("Logout")
-        builder.setMessage("Are you sure you want to logout?")
-        builder.setPositiveButton("Yes") { _, _ ->
-            FirebaseMessaging.getInstance().deleteToken()
-            FirebaseAuth.getInstance().signOut()
-            Intent(requireActivity(), LoginActivity::class.java).also {
-                it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(it)
-            }
-        }
-        builder.setNegativeButton("No") { _, _ -> }
-        builder.show()
-    }
-
     private fun getNFCToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             if (it.isSuccessful) {
@@ -276,6 +258,15 @@ class DoctorProfileFragment : Fragment() {
                     }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // hide the bottom navigation view
+        val bottomNavigationView = requireActivity().findViewById<View>(R.id.nav_view)
+        bottomNavigationView.visibility = View.GONE
+
     }
     override fun onDestroyView() {
         super.onDestroyView()

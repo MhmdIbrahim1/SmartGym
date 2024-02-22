@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.doctor
+package com.example.smartgymapp.ui.doctor.dMain
 
 import android.util.Log
 import androidx.lifecycle.LiveData

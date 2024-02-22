@@ -21,7 +21,7 @@
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/profile_pic_image_view"/>
 
@@ -31,6 +31,7 @@
                 android:layout_height="52dp"
                 android:layout_toEndOf="@id/back_btn"
                 android:src="@drawable/man_user"
+                android:layout_marginStart="20dp"
                 android:scaleType="centerCrop"
                 />
 
@@ -73,7 +74,7 @@
             android:layout_toStartOf="@id/message_send_btn"
             android:background="@drawable/edit_text_rounded_corner"
             android:elevation="4dp"
-            android:hint="Write message here"
+            android:hint="@string/write_a_message"
             android:padding="10dp" />
 
         <ImageButton

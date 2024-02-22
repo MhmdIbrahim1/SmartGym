@@ -16,7 +16,7 @@
 
 
     <item
-        android:id="@+id/doctorProfileFragment"
+        android:id="@+id/doctorAccountFragment"
         android:icon="@drawable/profile"
-        android:title="@string/profile" />
+        android:title="@string/account" />
 </menu>

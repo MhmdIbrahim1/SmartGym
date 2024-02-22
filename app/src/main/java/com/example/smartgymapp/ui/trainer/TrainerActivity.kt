@@ -1,5 +1,6 @@
 package com.example.smartgymapp.ui.trainer
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -33,6 +34,8 @@ import com.example.smartgymapp.ui.trainer.tMain.MainTrainerViewModel
 import com.example.smartgymapp.util.CommonActivity
 import com.example.smartgymapp.util.CommonActivity.getResourceColor
 import com.example.smartgymapp.util.CommonActivity.isLtr
+import com.example.smartgymapp.util.MyContextWrapper
+import com.example.smartgymapp.util.MyPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,6 +48,8 @@ class TrainerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrainerBinding
     private lateinit var navController: NavController
     private val viewModel by viewModels<MainTrainerViewModel>()
+
+    private lateinit var myPreference: MyPreference
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -107,7 +112,7 @@ class TrainerActivity : AppCompatActivity() {
 
 
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.trainer_nav_host_fragment) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
         navController = navHostFragment.navController
         binding.trainerNavView.setOnItemSelectedListener { item ->
             onNavDestinationSelected(item, navController)
@@ -126,20 +131,6 @@ class TrainerActivity : AppCompatActivity() {
                 )
             }
         }
-//        val userId = intent.extras?.getString("userId")
-//        FirebaseFirestore.getInstance().collection(LoginViewModel.USER_COLLECTION).document(userId!!).get()
-//            .addOnCompleteListener {task ->
-//                if (task.isSuccessful){
-//                    val model = task.result.toObject(UserModel::class.java)
-//                    if (model != null){
-//                        val intent = Intent(this, DoChatActivity::class.java)
-//                        CommonActivity.passUserModelAsIntent(intent, model)
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                        startActivity(intent)
-//                    }
-//                }
-//
-//            }
     }
 
     private fun NavDestination.matchDestination(@IdRes destId: Int): Boolean =
@@ -154,7 +145,7 @@ class TrainerActivity : AppCompatActivity() {
         if (item.order and Menu.CATEGORY_SECONDARY == 0) {
             builder.setPopUpTo(
                 navController.graph.findStartDestination().id,
-                inclusive = false,
+                inclusive = true,
                 saveState = true
             )
         }
@@ -170,7 +161,7 @@ class TrainerActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.trainer_nav_host_fragment) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
         navHostFragment.navController.currentDestination?.let { updateNavBar(it) }
     }
 
@@ -183,7 +174,7 @@ class TrainerActivity : AppCompatActivity() {
             R.id.trainerProfileFragment,
         ).contains(destination.id)
 
-        binding.trainerNavHostFragment.apply {
+        binding.trainerNavView.apply {
             val params = layoutParams as ConstraintLayout.LayoutParams
             val push =
                 if (!dontPush) resources.getDimensionPixelSize(R.dimen.navbar_width) else 0
@@ -264,4 +255,10 @@ class TrainerActivity : AppCompatActivity() {
         }
     }
 
+
+    override fun attachBaseContext(newBase: Context?) {
+        myPreference = MyPreference(newBase!!)
+        val lang = myPreference.getLanguage()
+        super.attachBaseContext(MyContextWrapper.wrap(newBase,lang))
+    }
 }

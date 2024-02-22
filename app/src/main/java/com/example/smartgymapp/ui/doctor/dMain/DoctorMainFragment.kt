@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.doctor
+package com.example.smartgymapp.ui.doctor.dMain
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -105,6 +105,7 @@ class DoctorMainFragment : Fragment() {
         binding.noTraineeRequests.visibility = View.GONE
         binding.traineeBookings.visibility = View.VISIBLE
     }
+
 
 
 }

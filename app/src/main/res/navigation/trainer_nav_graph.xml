@@ -20,4 +20,18 @@
         android:name="com.example.smartgymapp.ui.trainer.tProfile.TrainerProfileFragment"
         android:label="fragment_trainer_profile"
         tools:layout="@layout/fragment_trainer_profile" />
+    <fragment
+        android:id="@+id/trainerAccountFragment"
+        android:name="com.example.smartgymapp.ui.trainer.tProfile.TrainerAccountFragment"
+        android:label="TrainerAccountFragment"
+        tools:layout="@layout/fragment_trainee_profile">
+        <action
+            android:id="@+id/action_trainerAccountFragment_to_trainerProfileFragment"
+            app:destination="@id/trainerProfileFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+
+    </fragment>
 </navigation>

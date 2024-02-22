@@ -1,5 +1,6 @@
 package com.example.smartgymapp.ui.trainee
 
+import android.content.Context
 import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,16 +24,25 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.smartgymapp.util.CommonActivity
+import com.example.smartgymapp.util.CommonActivity.colorFromAttribute
+import com.example.smartgymapp.util.CommonActivity.updateLocale
+import com.example.smartgymapp.util.MyContextWrapper
+import com.example.smartgymapp.util.MyPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @AndroidEntryPoint
 class TraineeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTraineeBinding
     private lateinit var navController: NavController
+
+    private lateinit var myPreference: MyPreference
 
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -93,13 +103,13 @@ class TraineeActivity : AppCompatActivity() {
                 hasNotificationPermissionGranted = true
             }
 
-
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.trainee_fragment_container_view) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.fragment_container_view) as NavHostFragment
         navController = navHostFragment.navController
         binding.navView.setOnItemSelectedListener { item ->
             onNavDestinationSelected(item, navController)
         }
+
 
         val rippleColor = ColorStateList.valueOf(getResourceColor(R.attr.orange, 0.1f))
 
@@ -115,6 +125,28 @@ class TraineeActivity : AppCompatActivity() {
             }
         }
 
+
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    window?.navigationBarColor = colorFromAttribute(R.attr.primaryGrayBackground)
+                    updateLocale()
+
+                    // If we don't disable we end up in a loop with default behavior calling
+                    // this callback as well, so we disable it, run default behavior,
+                    // then re-enable this callback so it can be used for next back press.
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        )
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateLocale() // update locale on configuration change
     }
 
 
@@ -134,6 +166,7 @@ class TraineeActivity : AppCompatActivity() {
                 saveState = true
             )
         }
+
         val options = builder.build()
         return try {
             navController.navigate(item.itemId, null, options)
@@ -158,5 +191,13 @@ class TraineeActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun attachBaseContext(newBase: Context?) {
+        myPreference = MyPreference(newBase!!)
+        val lang = myPreference.getLanguage()
+        super.attachBaseContext(MyContextWrapper.wrap(newBase,lang))
+    }
+
 }
+
 

@@ -7,17 +7,31 @@
 
     <fragment
         android:id="@+id/doctorMainFragment"
-        android:name="com.example.smartgymapp.ui.doctor.DoctorMainFragment"
+        android:name="com.example.smartgymapp.ui.doctor.dMain.DoctorMainFragment"
         android:label="fragment_doctor_main"
         tools:layout="@layout/fragment_doctor_main" />
     <fragment
         android:id="@+id/doctorProfileFragment"
-        android:name="com.example.smartgymapp.ui.doctor.DoctorProfileFragment"
+        android:name="com.example.smartgymapp.ui.doctor.dProfile.DoctorProfileFragment"
         android:label="fragment_doctor_profile"
         tools:layout="@layout/fragment_doctor_profile" />
     <fragment
         android:id="@+id/doctorChatFragment"
-        android:name="com.example.smartgymapp.ui.doctor.DoctorChatFragment"
+        android:name="com.example.smartgymapp.ui.doctor.dChat.DoctorChatFragment"
         android:label="fragment_doctor_chat"
         tools:layout="@layout/fragment_doctor_chat" />
+    <fragment
+        android:id="@+id/doctorAccountFragment"
+        android:name="com.example.smartgymapp.ui.doctor.dProfile.DoctorAccountFragment"
+        android:label="DoctorAccountFragment"
+        tools:layout="@layout/fragment_doctor_account">
+        <action
+            android:id="@+id/action_doctorAccountFragment_to_doctorProfileFragment"
+            app:destination="@id/doctorProfileFragment"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/nav_pop_enter"
+            app:popExitAnim="@anim/nav_pop_exit" />
+
+    </fragment>
 </navigation>

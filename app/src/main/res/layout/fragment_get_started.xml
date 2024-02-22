@@ -51,10 +51,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_thin"
-            android:text="@string/smart_gym_app"
+            android:text="@string/let_s_get_started"
             android:textColor="@color/textColor"
             android:textSize="28sp" />
-
 
     </LinearLayout>
 

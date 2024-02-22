@@ -31,8 +31,8 @@ class SearchFragment : Fragment() {
 
         pagerAdapter = FragmentsPagerAdapter(childFragmentManager, lifecycle)
 
-        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Doctors"))
-        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Trainers"))
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(resources.getString(R.string.doctors)))
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(resources.getString(R.string.allTrainers)))
 
         binding.viewPagers2.adapter = pagerAdapter
 

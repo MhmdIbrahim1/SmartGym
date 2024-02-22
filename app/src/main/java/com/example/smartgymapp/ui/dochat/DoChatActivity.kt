@@ -2,6 +2,7 @@ package com.example.smartgymapp.ui.dochat
 
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +21,10 @@ import com.example.smartgymapp.model.UserModel
 import com.example.smartgymapp.mvvm.launchSafe
 import com.example.smartgymapp.util.CommonActivity
 import com.example.smartgymapp.util.CommonActivity.callApi
+import com.example.smartgymapp.util.CommonActivity.updateLocale
 import com.example.smartgymapp.util.FirebaseUtil
+import com.example.smartgymapp.util.MyContextWrapper
+import com.example.smartgymapp.util.MyPreference
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -45,6 +49,8 @@ class DoChatActivity : AppCompatActivity() {
     private lateinit var otherUser: UserModel
     private lateinit var chatroomModel: ChatroomModel
     private lateinit var chatAdapter: ChatRecyclerAdapter
+
+    private lateinit var myPreference: MyPreference
 
     private val batchSize = 10
     private var lastVisibleMessage: DocumentSnapshot? = null
@@ -231,5 +237,10 @@ class DoChatActivity : AppCompatActivity() {
         }
     }
 
+    override fun attachBaseContext(newBase: Context?) {
+        myPreference = MyPreference(newBase!!)
+        val lang = myPreference.getLanguage()
+        super.attachBaseContext(MyContextWrapper.wrap(newBase,lang))
+    }
 }
 

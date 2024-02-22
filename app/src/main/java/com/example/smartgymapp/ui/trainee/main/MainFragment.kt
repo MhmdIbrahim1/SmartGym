@@ -83,12 +83,12 @@ class MainFragment : Fragment() {
 
     private fun setupExercisesRv() {
         exercisesItem = listOf(
-            ExercisesAdapter.ExerciseItem(R.drawable.cycling,"CYCLING"),
-            ExercisesAdapter.ExerciseItem(R.drawable.running,"RUNNING"),
-            ExercisesAdapter.ExerciseItem(R.drawable.daily,"DAILY HEALTH"),
-            ExercisesAdapter.ExerciseItem(R.drawable.flex,"FLEXIBILITY"),
-            ExercisesAdapter.ExerciseItem(R.drawable.jump,"JUMP ROPE"),
-            ExercisesAdapter.ExerciseItem(R.drawable.squat,"SQUAT"),
+            ExercisesAdapter.ExerciseItem(R.drawable.cycling,resources.getString(R.string.cycling)),
+            ExercisesAdapter.ExerciseItem(R.drawable.running,resources.getString(R.string.running)),
+            ExercisesAdapter.ExerciseItem(R.drawable.daily,resources.getString(R.string.daily_health)),
+            ExercisesAdapter.ExerciseItem(R.drawable.flex,resources.getString(R.string.flexibility)),
+            ExercisesAdapter.ExerciseItem(R.drawable.jump,resources.getString(R.string.jump_rope)),
+            ExercisesAdapter.ExerciseItem(R.drawable.squat,resources.getString(R.string.squat)),
         )
         exercisesAdapter = ExercisesAdapter(exercisesItem)
         binding.exerciseRv.apply {

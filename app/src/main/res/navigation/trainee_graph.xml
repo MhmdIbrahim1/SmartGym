@@ -13,9 +13,14 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.smartgymapp.ui.trainee.ProfileFragment"
+        android:name="com.example.smartgymapp.ui.trainee.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile"
+        app:enterAnim="@anim/enter_anim"
+        app:exitAnim="@anim/exit_anim"
+        app:popEnterAnim="@anim/enter_anim"
+        app:popExitAnim="@anim/exit_anim"
+        />
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.smartgymapp.ui.trainee.main.MainFragment"
@@ -40,4 +45,52 @@
         android:name="com.example.smartgymapp.ui.trainee.search.TrainersFragment"
         android:label="fragment_trainers"
         tools:layout="@layout/fragment_trainers" />
+    <fragment
+        android:id="@+id/traineeProfileFragment"
+        android:name="com.example.smartgymapp.ui.trainee.profile.TraineeProfileFragment"
+        android:label="TraineeProfileFragment"
+        tools:layout="@layout/fragment_trainee_profile"
+        android:layout_height="match_parent"
+        app:enterAnim="@anim/enter_anim"
+        app:exitAnim="@anim/exit_anim"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit"/>
+    <action
+        android:id="@+id/action_navigation_global_to_navigation_my_profile"
+        app:destination="@id/profileFragment"
+        app:enterAnim="@anim/enter_anim"
+        app:exitAnim="@anim/exit_anim"
+        app:popEnterAnim="@anim/enter_anim"
+        app:popExitAnim="@anim/exit_anim" />
+
+    <action
+        android:id="@+id/action_navigation_global_to_navigation_trainers_booked"
+        app:destination="@id/trainersBookedFragment"
+        app:enterAnim="@anim/enter_anim"
+        app:exitAnim="@anim/exit_anim"
+        app:popEnterAnim="@anim/enter_anim"
+        app:popExitAnim="@anim/exit_anim" />
+
+    <action
+        android:id="@+id/action_navigation_global_to_navigation_doctors_booked"
+        app:destination="@id/doctorsBookedFragment"
+        app:enterAnim="@anim/enter_anim"
+        app:exitAnim="@anim/exit_anim"
+        app:popEnterAnim="@anim/enter_anim"
+        app:popExitAnim="@anim/exit_anim" />
+    <fragment
+        android:id="@+id/trainersBookedFragment"
+        android:name="com.example.smartgymapp.ui.trainee.profile.booking.TrainersBookedFragment"
+        android:label="TrainersBookedFragment"
+        tools:layout="@layout/fragment_trainee_booked"
+        />
+    <fragment
+        android:id="@+id/doctorsBookedFragment"
+        android:name="com.example.smartgymapp.ui.trainee.profile.booking.DoctorsBookedFragment"
+        android:label="DoctorsBookedFragment"
+        tools:layout="@layout/fragment_trainee_booked"
+        app:enterAnim="@anim/enter_anim"
+        app:exitAnim="@anim/exit_anim"
+        app:popEnterAnim="@anim/enter_anim"
+        app:popExitAnim="@anim/exit_anim" />
 </navigation>

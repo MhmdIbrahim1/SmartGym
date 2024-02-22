@@ -1,4 +1,4 @@
-package com.example.smartgymapp.ui.doctor
+package com.example.smartgymapp.ui.doctor.dChat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

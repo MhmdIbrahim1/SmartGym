@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.collectLatest
 @AndroidEntryPoint
 class GetStartedFragment : Fragment() {
     private lateinit var binding: FragmentGetStartedBinding
-    //private val viewModel by activityViewModels<GetStartedViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,12 +46,4 @@ class GetStartedFragment : Fragment() {
         lottieAnimationView.repeatCount = LottieDrawable.INFINITE
         lottieAnimationView.playAnimation()
     }
-
-    private fun navigateToActivity(activityClass: Class<*>) {
-     Intent(requireActivity(), activityClass).also {
-            it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(it)
-        }
-    }
-
 }

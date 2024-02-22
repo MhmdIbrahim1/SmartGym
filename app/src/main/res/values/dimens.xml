@@ -23,4 +23,5 @@
 
     <dimen name="account_select_linear_item_size">100dp</dimen>
     <dimen name="logintextdim">17sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

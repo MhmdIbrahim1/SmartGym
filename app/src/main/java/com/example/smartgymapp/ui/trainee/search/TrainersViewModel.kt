@@ -60,6 +60,7 @@ class TrainersViewModel @Inject constructor(
             }
     }
     fun sendTraineeToTrainerRequests(trainerUserId: String, traineeUserId: String) {
+
         // Get the trainee's details from Firestore using traineeUserId
         firestore.collection("users").document(traineeUserId).get()
             .addOnSuccessListener { traineeDocumentSnapshot ->

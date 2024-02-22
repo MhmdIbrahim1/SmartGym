@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello_blank_fragment">مرحبًا بالمقطع الفارغ</string>
+    <string name="welcome_to_our_smart_gym_app">مرحبًا بك في SmartFit</string>
+    <string name="let_s_get_started">لنبدأ</string>
+    <string name="lets_login">لنقم بتسجيل الدخول</string>
+    <string name="hint_email">البريد الإلكتروني</string>
+    <string name="hint_password">كلمة المرور</string>
+    <string name="for_more_details_follow_this_link_www_powerhour_com_info">لمزيد من التفاصيل اتبع هذا الرابط\n https://smartfit-web.vercel.app/</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="user">متدرب</string>
+    <string name="allTrainers">المدربون</string>
+    <string name="doctor">طبيب</string>
+    <string name="trainers">تحدث مع مدربيك وأطبائك</string>
+    <string name="home">الصفحة الرئيسية</string>
+    <string name="chat">الدردشة</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="program">البرنامج</string>
+    <string name="diet">النظام الغذائي</string>
+    <string name="calender">التقويم</string>
+    <string name="main">الرئيسية</string>
+    <string name="trainer">مدرب</string>
+    <string name="search">بحث</string>
+    <string name="book_now">احجز الآن</string>
+    <string name="trainee_bookings">حجوزات المتدربين</string>
+    <string name="booking">الحجز</string>
+    <string name="chat_with_your_patients">تحدث مع مرضاك</string>
+    <string name="first_name">الاسم الأول</string>
+    <string name="last_name">الاسم الأخير</string>
+    <string name="update">تحديث</string>
+    <string name="user_type">نوع المستخدم</string>
+    <string name="edit">تعديل</string>
+    <string name="cancel">إلغاء</string>
+    <string name="chat_with_your_trainees">تحدث مع متدربيك</string>
+    <string name="trainee">متدرب</string>
+    <string name="log_out">تسجيل الخروج</string>
+    <string name="are_you_sure_you_want_to_logout">هل أنت متأكد أنك تريد تسجيل الخروج؟</string>
+    <string name="yes">تسجيل الخروج</string>
+    <string name="no">إلغاء</string>
+    <string name="no_trainee_requests">لا توجد طلبات متدربين</string>
+    <string name="no_patients_yet_to_chat_with">لا يوجد مرضى حتى الآن للدردشة معهم</string>
+    <string name="no_trainees_yet_to_chat_with">لا يوجد متدربون حتى الآن للدردشة معهم</string>
+    <string name="doctors">الأطباء</string>
+    <string name="trainers_profile">المدربون</string>
+    <string name="language">اللغة</string>
+    <string name="regional">الإقليمية</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="my_bookings">حجوزاتي</string>
+    <string name="english">English</string>
+    <string name="arabic">العربيه</string>
+    <string name="apply">تطبيق</string>
+
+    <string name="cycling">ركوب الدراجة</string>
+    <string name="running">الجري</string>
+    <string name="daily_health">الصحة اليومية</string>
+    <string name="flexibility">المرونة</string>
+    <string name="jump_rope">القفز بالحبل</string>
+    <string name="squat">الانثناء</string>
+    <string name="next">التالي</string>
+    <string name="previous">السابق</string>
+    <string name="traines">المتدربين</string>
+    <string name="patients">المرضى</string>
+    <string name="allDoctors">الأطباء</string>
+    <string name="app_language">لغة التطبيق</string>
+    <string name="account">الحساب</string>
+    <string name="pending">قيد الانتظار</string>
+    <string name="accepted">مقبول</string>
+    <string name="write_a_message">اكتب رسالة</string>
+
+
+</resources>

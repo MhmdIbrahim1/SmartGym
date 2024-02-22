@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
+import com.example.smartgymapp.util.CommonActivity.updateLocale
 import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
@@ -18,6 +19,7 @@ class SmartGymApp: Application(){
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this)
+        updateLocale()
 
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
