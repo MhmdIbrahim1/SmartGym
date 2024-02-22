@@ -136,9 +136,9 @@ class TrainerAccountFragment : Fragment() {
 
     private fun showLogoutConfirmationDialog() {
         val builder = AlertDialog.Builder(requireActivity())
-        builder.setTitle("Logout")
-        builder.setMessage("Are you sure you want to logout?")
-        builder.setPositiveButton("Yes") { _, _ ->
+        builder.setTitle(resources.getString(R.string.log_out))
+        builder.setMessage(resources.getString(R.string.are_you_sure_you_want_to_logout))
+        builder.setPositiveButton(resources.getString(R.string.yes)) { _, _ ->
             FirebaseMessaging.getInstance().deleteToken()
             FirebaseAuth.getInstance().signOut()
             Intent(requireActivity(), LoginActivity::class.java).also {
@@ -146,8 +146,9 @@ class TrainerAccountFragment : Fragment() {
                 startActivity(it)
             }
         }
-        builder.setNegativeButton("No") { _, _ -> }
+        builder.setNegativeButton(resources.getString(R.string.no)) { _, _ -> }
         builder.show()
+
     }
 
     private fun showUserInformation(data: UserModel) {
